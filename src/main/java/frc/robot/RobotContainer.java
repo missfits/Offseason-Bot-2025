@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,11 +49,20 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * DrivetrainConstants.MAX_ROTATION_SPEED) // Drive counterclockwise with negative X (left)
-            )
+            drivetrain.applyRequest(() -> {
+                
+                SmartDashboard.putNumber("controller/left x", joystick.getLeftX());
+                SmartDashboard.putNumber("controller/left y", joystick.getLeftY());
+                SmartDashboard.putNumber("controller/right x", joystick.getRightX());
+                SmartDashboard.putNumber("controller/right y", joystick.getRightY());
+                JoystickVals shapedTrans = Controls.adjustInputs(joystick.getLeftX(), joystick.getLeftY(), true);
+                JoystickVals shapedRot = Controls.adjustInputs(joystick.getRightX(), joystick.getRightY(), false);
+                
+                return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                    .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                    .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
+            
+            })
         );
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
