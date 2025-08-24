@@ -16,6 +16,17 @@ public class Controls {
         return inputShape(input.x(), input.y(), deadband);
     }
 
+    public static JoystickVals adjustInputs(double x, double y, boolean transJoystick) {
+        double deadband;
+        if (transJoystick) {
+            deadband = OperatorConstants.TRANSLATION_JOYSTICK_DEADBAND;
+        } else {
+            deadband = OperatorConstants.ROTATION_JOYSTICK_DEADBAND;
+        }
+        return inputShape(x, y, deadband);
+    }
+
+
     public static JoystickVals inputShape(double x, double y, double deadband) {
         double hypot = Math.hypot(x, y);
         double deadbandedValue = MathUtil.applyDeadband(hypot, deadband);
