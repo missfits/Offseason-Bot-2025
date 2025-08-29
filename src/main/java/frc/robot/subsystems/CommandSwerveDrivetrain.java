@@ -42,6 +42,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
+    private final SwerveRequest.SwerveDriveBrake m_brakeRequest = new SwerveRequest.SwerveDriveBrake();
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
@@ -253,14 +254,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    private void executePointWheelsinX(CommandSwerveDrivetrain drivetrain){
-        SwerveRequest.SwerveDriveBrake wheelRequest = new SwerveRequest.SwerveDriveBrake();
-        setControl(wheelRequest);
+    private void executePointWheelsinX(){
+        setControl(m_brakeRequest);
     }
     public Command pointWheelsInX(){
 
         return new RunCommand(
-            () -> executePointWheelsinX(this)
+            () -> executePointWheelsinX()
         ).withName("Point Wheels in X Configuration");
 
     }
