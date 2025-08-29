@@ -59,7 +59,7 @@ public class RobotContainer {
             )
         );
 
-        joystick.x().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, driveFacingAngle, 10)));
+        joystick.x().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 10)));
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
