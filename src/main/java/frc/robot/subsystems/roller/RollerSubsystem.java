@@ -1,4 +1,4 @@
-package frc.robot.subsystems.roller.java;
+package frc.robot.subsystems.roller;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
-import frc.robot.RobotState;
 
 public class RollerSubsystem extends SubsystemBase {
     private final RollerIOHardware m_IO = new RollerIOHardware();
@@ -26,10 +25,11 @@ public class RollerSubsystem extends SubsystemBase {
         ).withTimeout(0).withName("rollerOffInstant");
     }
 
-    public Command runRollerInstant(double speed){
+    public Command runRollerInstant(double speed) {
         return new InstantCommand(
-            () -> {() -> {m_IO.setVoltage(speed); SmartDashboard.putString("roller/currentlyRunningCommand", "runRoller");},}
-        ).withName("rollerInstant")
+            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("roller/currentlyRunningCommand", "runRollerInstant");},
+            this
+        ).withName("rollerOffInstant");
     }
 
     public Command setVoltageToZeroCommand() {

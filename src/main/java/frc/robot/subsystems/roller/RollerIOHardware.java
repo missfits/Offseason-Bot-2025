@@ -1,6 +1,8 @@
-package frc.robot.subsystems.rolleriohardware.java;
+package frc.robot.subsystems.roller;
 
 import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -41,6 +43,10 @@ public class RollerIOHardware {
     // setters
     public void motorOff() {
         m_rollerMotor.stopMotor();
+    }
+
+    public void setPosition(double value) {
+        m_rollerMotor.setPosition(value);
     }
 
     public void resetPosition() {
