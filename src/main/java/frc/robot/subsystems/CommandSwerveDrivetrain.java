@@ -229,13 +229,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
     
+    public Command resetPigeon(){
+        return new InstantCommand(
+            () -> this.getPigeon2().reset()
+        );
+        
+    }
 
     public FieldCentricFacingAngle snapToAngle(CommandXboxController joystick, double angle){
         SmartDashboard.putNumber("drivetrain/snap to angle", angle);
         JoystickVals shapedValues = Controls.adjustInputs(joystick.getLeftX(), joystick.getLeftY(), true );
         return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withTargetDirection(Rotation2d.fromDegrees(-55));
+            .withTargetDirection(Rotation2d.fromDegrees(angle));
         
     } 
 

@@ -43,6 +43,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public RobotContainer() {
+        drivetrain.resetPigeon();
         configureBindings();
     }
 
