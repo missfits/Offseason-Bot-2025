@@ -55,8 +55,8 @@ public class RobotContainer {
                 SmartDashboard.putNumber("controller/left y", joystick.getLeftY());
                 SmartDashboard.putNumber("controller/right x", joystick.getRightX());
                 SmartDashboard.putNumber("controller/right y", joystick.getRightY());
-                JoystickVals shapedTrans = Controls.adjustInputs(joystick.getLeftX(), joystick.getLeftY(), true);
-                JoystickVals shapedRot = Controls.adjustInputs(joystick.getRightX(), joystick.getRightY(), false);
+                JoystickVals shapedTrans = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true);
+                JoystickVals shapedRot = Controls.inputShape(joystick.getRightX(), joystick.getRightY(), false);
                 
                 return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
                     .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)

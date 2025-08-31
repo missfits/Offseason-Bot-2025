@@ -6,17 +6,11 @@ import frc.robot.Constants.OperatorConstants;
 
 public class Controls {
 
-    public static JoystickVals adjustInputs(JoystickVals input, boolean transJoystick) {
-        double deadband;
-        if (transJoystick) {
-            deadband = OperatorConstants.TRANSLATION_JOYSTICK_DEADBAND;
-        } else {
-            deadband = OperatorConstants.ROTATION_JOYSTICK_DEADBAND;
-        }
-        return inputShape(input.x(), input.y(), deadband);
+    public static JoystickVals inputShape(JoystickVals input, boolean transJoystick) {
+        return inputShape(input.x(), input.y(), transJoystick);
     }
 
-    public static JoystickVals adjustInputs(double x, double y, boolean transJoystick) {
+    public static JoystickVals inputShape(double x, double y, boolean transJoystick) {
         double deadband;
         if (transJoystick) {
             deadband = OperatorConstants.TRANSLATION_JOYSTICK_DEADBAND;
