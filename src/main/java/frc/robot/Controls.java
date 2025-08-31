@@ -21,13 +21,16 @@ public class Controls {
     }
 
     public static JoystickVals inputShape(double x, double y, double deadband) {
+        // manipulate hypotenuse length to maintain angle
         double hypot = Math.hypot(x, y);
+        // apply deadband
         double deadbandedValue = MathUtil.applyDeadband(hypot, deadband);
     
         double scaleFactor;
         if (hypot == 0) { // avoid division by 0 issues
             scaleFactor = 0;
         } else {
+            // use ratio (new length)/(old length) of hypotenuse
             scaleFactor = deadbandedValue * Math.abs(deadbandedValue) / hypot; 
         }
 
