@@ -20,6 +20,9 @@ public class Constants {
     public static class DrivetrainConstants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
+        
+        public static final double ROTATION_kP = 1;
+        public static final double ROTATION_kI = 0;
+        public static final double ROTATION_kD = 0;
     }
 }
