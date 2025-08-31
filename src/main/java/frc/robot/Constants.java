@@ -15,6 +15,8 @@ public class Constants {
 
         public static final double TRANSLATION_JOYSTICK_DEADBAND = 0.1;
         public static final double ROTATION_JOYSTICK_DEADBAND = 0.1;
+
+        public static final double SLOWMODE_FACTOR = 0.3;
     }
 
     public static class DrivetrainConstants {

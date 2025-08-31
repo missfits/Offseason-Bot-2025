@@ -36,4 +36,9 @@ public class Controls {
 
         return new JoystickVals(x * scaleFactor, y * scaleFactor);
     }
+
+    public static JoystickVals adjustSlowmode(JoystickVals input) {
+        return new JoystickVals(input.x() * OperatorConstants.SLOWMODE_FACTOR, input.y() * OperatorConstants.SLOWMODE_FACTOR);
+    }
+    
 }

@@ -64,6 +64,23 @@ public class RobotContainer {
             
             })
         );
+        
+        joystick.rightBumper().whileTrue(drivetrain.applyRequest(()-> {
+            SmartDashboard.putNumber("controller/left x", joystick.getLeftX());
+            SmartDashboard.putNumber("controller/left y", joystick.getLeftY());
+            SmartDashboard.putNumber("controller/right x", joystick.getRightX());
+            SmartDashboard.putNumber("controller/right y", joystick.getRightY());
+            JoystickVals shapedTrans = Controls.adjustSlowmode(Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true));
+            JoystickVals shapedRot = Controls.adjustSlowmode(Controls.inputShape(joystick.getRightX(), joystick.getRightY(), false));
+            SmartDashboard.putNumber("controller/slowmode left x", shapedTrans.x());
+            SmartDashboard.putNumber("controller/slowmode left y", shapedTrans.y());
+            SmartDashboard.putNumber("controller/slowmode right x", shapedRot.x());
+            SmartDashboard.putNumber("controller/slowmode right y", shapedRot.y());
+            return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                    .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                    .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
+            
+        }));
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
