@@ -20,6 +20,10 @@ public class Controls {
         return inputShape(x, y, deadband);
     }
 
+    /**
+     * if x and y within deadband, x=0 and y=0
+     * square x and y joystick values while maintaining original angle 
+    */
     public static JoystickVals inputShape(double x, double y, double deadband) {
         // manipulate hypotenuse length to maintain angle
         double hypot = Math.hypot(x, y);
