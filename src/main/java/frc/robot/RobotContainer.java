@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -51,14 +52,37 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * DrivetrainConstants.MAX_ROTATION_SPEED) // Drive counterclockwise with negative X (left)
-            )
-        
+            drivetrain.applyRequest(() -> {
+                
+                SmartDashboard.putNumber("controller/left x", joystick.getLeftX());
+                SmartDashboard.putNumber("controller/left y", joystick.getLeftY());
+                SmartDashboard.putNumber("controller/right x", joystick.getRightX());
+                SmartDashboard.putNumber("controller/right y", joystick.getRightY());
+                JoystickVals shapedTrans = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true);
+                JoystickVals shapedRot = Controls.inputShape(joystick.getRightX(), joystick.getRightY(), false);
+                
+                return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                    .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                    .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
+            
+            })
         );
+        
+        joystick.rightBumper().whileTrue(drivetrain.applyRequest(()-> {
+            JoystickVals shapedTrans = Controls.adjustSlowmode(Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true));
+            JoystickVals shapedRot = Controls.adjustSlowmode(Controls.inputShape(joystick.getRightX(), joystick.getRightY(), false));
+            return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+                    .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+                    .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
+            
+        }));
 
+        joystick.x().whileTrue(drivetrain.pointWheelsInX());
+
+        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        ));
 
         drivetrain.setHeadingController();
 
@@ -67,11 +91,6 @@ public class RobotContainer {
         //joystick.a().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 180)));
         //joystick.x().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 270)));
 
-        joystick.x().whileTrue(drivetrain.pointWheelsInX());
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
 
 
         // Run SysId routines when holding back/start and X/Y.
