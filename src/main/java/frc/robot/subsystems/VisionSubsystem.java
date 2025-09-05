@@ -63,7 +63,8 @@ public class VisionSubsystem extends SubsystemBase{
       for (LocalizationCamera cam : cameras){
         cam.findTarget();
       }
-  
+
+      // sorts the camera readings by time (care less about older readings)
       camerasWithValidPose = cameras.stream() // turn the list into a stream
       .filter((camera) -> { // only get the cameras with a valid EstimatedRobotPose
            return camera.getRobotPose() != null && camera.getTargetFound();
