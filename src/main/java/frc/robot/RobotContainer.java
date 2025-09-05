@@ -95,8 +95,8 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //bindings for roller subsystem
-        joystick.x().and(joystick.a()).whileTrue(m_roller.runRollerInstant(RollerConstants.OUTTAKE_MOTOR_SPEED));
-        m_roller.setDefaultCommand(m_roller.runRollerOffInstant());
+        joystick.y().whileTrue(m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED));
+        m_roller.setDefaultCommand(m_roller.runRollerOff());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
