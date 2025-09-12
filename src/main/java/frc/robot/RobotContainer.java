@@ -56,30 +56,20 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> {
-                
-                SmartDashboard.putNumber("controller/left x", joystick.getLeftX());
-                SmartDashboard.putNumber("controller/left y", joystick.getLeftY());
-                SmartDashboard.putNumber("controller/right x", joystick.getRightX());
-                SmartDashboard.putNumber("controller/right y", joystick.getRightY());
-                JoystickVals shapedTrans = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true);
-                JoystickVals shapedRot = Controls.inputShape(joystick.getRightX(), joystick.getRightY(), false);
-                
-                return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
-                    .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                    .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
-            
-            })
+            drivetrain.applyRequest(() -> drivetrain.defaultDrive(
+                new JoystickVals(joystick.getLeftX(), joystick.getLeftY()), 
+                new JoystickVals(joystick.getRightX(), joystick.getRightY()),
+                false)
+            )
         );
         
-        joystick.rightBumper().whileTrue(drivetrain.applyRequest(()-> {
-            JoystickVals shapedTrans = Controls.adjustSlowmode(Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true));
-            JoystickVals shapedRot = Controls.adjustSlowmode(Controls.inputShape(joystick.getRightX(), joystick.getRightY(), false));
-            return drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
-                    .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-                    .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
-            
-        }));
+        joystick.rightBumper().whileTrue(
+            drivetrain.applyRequest(()-> drivetrain.defaultDrive(
+                new JoystickVals(joystick.getLeftX(), joystick.getLeftY()), 
+                new JoystickVals(joystick.getRightX(), joystick.getRightY()),
+                true)
+            )
+        );
 
         joystick.x().whileTrue(drivetrain.pointWheelsInX());
 

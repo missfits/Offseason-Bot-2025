@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
@@ -57,8 +58,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private final SwerveRequest.FieldCentricFacingAngle m_driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
         .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
-  
     private final SwerveRequest.SwerveDriveBrake m_brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.FieldCentric m_drive = new SwerveRequest.FieldCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -234,6 +237,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
+
+    // ----- DEFAULT DRIVE -----
+    public FieldCentric defaultDrive(JoystickVals transVals, JoystickVals rotVals, boolean slowmode) {
+
+        SmartDashboard.putNumber("controller/left x", transVals.x());
+        SmartDashboard.putNumber("controller/left y", transVals.y());
+        SmartDashboard.putNumber("controller/right x", rotVals.x());
+        SmartDashboard.putNumber("controller/right y", rotVals.y());
+        
+        JoystickVals shapedTrans = Controls.inputShape(transVals.x(), transVals.y(), true);
+        JoystickVals shapedRot = Controls.inputShape(rotVals.x(), rotVals.y(), false);
+        
+        if (slowmode) {
+            shapedTrans = Controls.adjustSlowmode(shapedTrans);
+            shapedRot = Controls.adjustSlowmode(shapedRot);
+        }
+
+        return m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
+            .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
+            .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
     }
 
     // ----- SNAP TO ANGLE -----
