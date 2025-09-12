@@ -26,6 +26,7 @@ public class AutorotateCommand extends Command {
   private final CommandSwerveDrivetrain m_drivetrain;
   private final ReefPosition m_side;
   private Rotation2d m_targetRotation;
+  private Translation2d m_targetTranslation;
 
   private final ProfiledPIDController xController = new ProfiledPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D, new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA));
   private final ProfiledPIDController yController = new ProfiledPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D, new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA));
@@ -54,6 +55,18 @@ public class AutorotateCommand extends Command {
 
 
     m_targetRotation = targetPose.getRotation().plus(Rotation2d.fromRadians(Math.PI));
+
+    if (targetPose != null){
+      if (m_side.equals(ReefPosition.RIGHT)){
+        m_targetTranslation = new Translation2d(
+            targetPose.getX()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(targetPose.getRotation().getRadians())
+            + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.cos(Math.PI/2 + targetPose.getRotation().getRadians()), 
+            targetPose.getY()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians())
+            + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.sin(Math.PI/2 + targetPose.getRotation().getRadians()));
+      }
+    }
 
 
     driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
