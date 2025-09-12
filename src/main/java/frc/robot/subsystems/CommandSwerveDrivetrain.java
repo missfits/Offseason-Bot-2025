@@ -234,13 +234,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
-    
-    public Command resetPigeon() {
-        return new InstantCommand(
-            () -> this.getPigeon2().reset()
-        );
     }
 
+    // ----- SNAP TO ANGLE -----
     public FieldCentricFacingAngle snapToAngle(CommandXboxController joystick, double angle){
         SmartDashboard.putNumber("drivetrain/snap to angle", angle);
         JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true );
@@ -252,6 +248,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void setHeadingController(){
         m_driveFacingAngle.HeadingController = new PhoenixPIDController(DrivetrainConstants.ROTATION_kP, DrivetrainConstants.ROTATION_kI, DrivetrainConstants.ROTATION_kD);
         m_driveFacingAngle.HeadingController.enableContinuousInput(0, 2*Math.PI);
+    }
+
+    public Command resetPigeon() {
+        return new InstantCommand(
+            () -> this.getPigeon2().reset()
+        );
+    }
+
+    // ----- POINT WHEELS IN X -----
+    private void executePointWheelsinX() {
+        setControl(m_brakeRequest);
+    }
+
+    public Command pointWheelsInX() {
+        return new RunCommand(
+            () -> executePointWheelsinX()
+        ).withName("Point Wheels in X Configuration");
     }
 
     @Override
@@ -288,15 +301,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
-
-    private void executePointWheelsinX() {
-        setControl(m_brakeRequest);
-    }
-
-    public Command pointWheelsInX() {
-        return new RunCommand(
-            () -> executePointWheelsinX()
-        ).withName("Point Wheels in X Configuration");
     }
 }
