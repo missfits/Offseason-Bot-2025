@@ -235,11 +235,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.dynamic(direction);
     }
     
-    public Command resetPigeon(){
+    public Command resetPigeon() {
         return new InstantCommand(
             () -> this.getPigeon2().reset()
         );
-        
     }
 
     public FieldCentricFacingAngle snapToAngle(CommandXboxController joystick, double angle){
@@ -248,15 +247,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(Rotation2d.fromDegrees(angle));
-        
     } 
 
     public void setHeadingController(){
         m_driveFacingAngle.HeadingController = new PhoenixPIDController(DrivetrainConstants.ROTATION_kP, DrivetrainConstants.ROTATION_kI, DrivetrainConstants.ROTATION_kD);
         m_driveFacingAngle.HeadingController.enableContinuousInput(0, 2*Math.PI);
     }
-
-
 
     @Override
     public void periodic() {
@@ -294,14 +290,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    private void executePointWheelsinX(){
+    private void executePointWheelsinX() {
         setControl(m_brakeRequest);
     }
-    public Command pointWheelsInX(){
 
+    public Command pointWheelsInX() {
         return new RunCommand(
             () -> executePointWheelsinX()
         ).withName("Point Wheels in X Configuration");
-
     }
 }
