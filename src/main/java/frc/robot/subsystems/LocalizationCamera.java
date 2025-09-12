@@ -255,11 +255,15 @@ public class LocalizationCamera {
 
     double avgDist = totalDistance / m_lastEstPoses.size();
     double avgTime = totalTime / m_lastEstPoses.size();
+    if (avgTime == 0){
+      return true;
+    }
     double avgSpeed = avgDist/avgTime;
 
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgDistBetweenLastEstPoses", avgDist);
     SmartDashboard.putNumber("vision/" + m_cameraName + "/avgSpeedBetweenLastEstPoses", avgSpeed);
+    SmartDashboard.putNumber("vision/" + m_cameraName + "/avgTimeBetweenLastEstPoses", avgTime);
 
-    return avgDist > VisionConstants.MAX_AVG_DIST_BETWEEN_LAST_EST_POSES;
+    return avgSpeed > VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
 }
