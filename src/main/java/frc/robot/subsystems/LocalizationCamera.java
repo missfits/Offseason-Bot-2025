@@ -103,12 +103,16 @@ public class LocalizationCamera {
     return curStdDevs;
   }
 
+  // Updates the field simulation in elastic
   public void updateField(Pose2d newPos){
     m_estPoseField.setRobotPose(newPos);
 
     SmartDashboard.putData("est pose field/" + m_cameraName + "/", m_estPoseField);
   }
 
+  
+  // processes all targets
+  // uses area, standard deviation checks (outlier results?), "jumpiness" (are readings sporadic/random-looking?), and "sane-ness" (are readings > pre-determined maximum constants?) 
   public void findTarget() {
 
       ArrayList<Integer> targetIds = new ArrayList<>();
@@ -195,6 +199,7 @@ public class LocalizationCamera {
         SmartDashboard.putBoolean("isConnected/" + m_cameraName, m_camera.isConnected());
     }
 
+  // Standard deviation measures how "spread out" / accurate a vision reading is
   private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
     if (estimatedPose.isEmpty()) {
       // No pose input. Default to single-tag std devs
@@ -239,6 +244,7 @@ public class LocalizationCamera {
     }
   }
 
+  // checks sporadic-ness of the vision readings based on the last 3 previous readings by comparing average distances
   public boolean isEstPoseJumpy() {
     if (m_lastEstPoses.size() < VisionConstants.NUM_LAST_EST_POSES) {
       return true;
