@@ -62,7 +62,7 @@ public class AutorotateCommand extends Command {
     Pose2d targetPose = VisionUtils.getClosestReefAprilTag(m_drivetrain.getState().Pose);
 
 
-    m_targetRotation = targetPose.getRotation().plus(Rotation2d.fromRadians(Math.PI));
+    
 
     if (targetPose != null){
       if (m_side.equals(ReefPosition.RIGHT)){
@@ -87,15 +87,23 @@ public class AutorotateCommand extends Command {
       else{
         m_targetTranslation = new Translation2d(
           targetPose.getX() 
-          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cose(targetPose.getRotation().getRadians())
-        )
+          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(targetPose.getRotation().getRadians()),
+          targetPose.getY()
+          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians()));
+    
       }
       m_targetIntermediateTranslation = m_targetTranslation.plus(new Translation2d(
             AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.cos(targetPose.getRotation().getRadians()),
             AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.sin(targetPose.getRotation().getRadians())
           ));
     }
+    m_targetRotation = targetPose.getRotation().plus(Rotation2d.fromRadians(Math.PI));
 
+    xController.reset(m_drivetrain.getState().Pose.getX());
+    yController.reset(m_drivetrain.getState().Pose.getY());
+
+    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
+    driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
 
@@ -105,14 +113,11 @@ public class AutorotateCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     double xVelocity;
     double yVelocity;
 
-    xController.reset(m_drivetrain.getState().Pose.getX());
-    yController.reset(m_drivetrain.getState().Pose.getY());
-
-    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
-    driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
+    
     if (! reachedIntermediateTranslation) {
       xController.setConstraints(normalConstraints);
       yController.setConstraints(normalConstraints);
@@ -120,7 +125,8 @@ public class AutorotateCommand extends Command {
       xVelocity = xController.calculate(m_drivetrain.getState().Pose.getX(), m_targetIntermediateTranslation.getX()) + xController.getSetpoint().velocity;
       yVelocity = yController.calculate(m_drivetrain.getState().Pose.getY(), m_targetIntermediateTranslation.getY()) + yController.getSetpoint().velocity;
       reachedIntermediateTranslation = isAligned(m_targetIntermediateTranslation);
-    } else {
+    } 
+    else {
       xController.setConstraints(intermediateConstraints);
       yController.setConstraints(intermediateConstraints);
 
@@ -130,8 +136,8 @@ public class AutorotateCommand extends Command {
         
    
     m_drivetrain.setControl(driveRequest
-    .withVelocityX(0)
-    .withVelocityY(0)
+    .withVelocityX(xVelocity)
+    .withVelocityY(yVelocity)
     .withTargetDirection(m_targetRotation));
   }
 
@@ -144,5 +150,14 @@ public class AutorotateCommand extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+  public boolean isAligned(Translation2d translation) {
+    Pose2d drivetrainPose = m_drivetrain.getState().Pose;
+    // change to absolute value?
+    double xDist = Math.abs(drivetrainPose.getX() - translation.getX());
+    double yDist = Math.abs(drivetrainPose.getY() - translation.getY());
+    SmartDashboard.putNumber("drivetrain/auto-alignment-xdist", xDist);
+    SmartDashboard.putNumber("drivetrain/auto-alignment-ydist", yDist);
+    return ((xDist < VisionConstants.VISION_ALIGNMENT_DISCARD) && (yDist < VisionConstants.VISION_ALIGNMENT_DISCARD));
   }
 }
