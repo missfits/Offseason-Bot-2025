@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoAlignConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -59,45 +60,54 @@ public class AutorotateCommand extends Command {
     
 
     // add visionutils later (assuming it exists)
-    Pose2d targetPose = VisionUtils.getClosestReefAprilTag(m_drivetrain.getState().Pose);
+    // targetPose is the targetPose of the april tag
+    Pose2d aprilTagPose = VisionUtils.getClosestReefAprilTag(m_drivetrain.getState().Pose);
 
 
     
 
-    if (targetPose != null){
+    if (aprilTagPose != null){
+    // if we assume aligning to the center, want to be Robot size /2 away from the april tag at an angle perpendicular. Then we align to the left/right/center
       if (m_side.equals(ReefPosition.RIGHT)){
         m_targetTranslation = new Translation2d(
-            targetPose.getX()
-            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(targetPose.getRotation().getRadians())
-            + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.cos(Math.PI/2 + targetPose.getRotation().getRadians()), 
-            targetPose.getY()
-            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians())
-            + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.sin(Math.PI/2 + targetPose.getRotation().getRadians()));
+            aprilTagPose.getX()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(aprilTagPose.getRotation().getRadians())
+            + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.cos(Math.PI/2 + aprilTagPose.getRotation().getRadians()), 
+            aprilTagPose.getY()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(aprilTagPose.getRotation().getRadians())
+            + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.sin(Math.PI/2 + aprilTagPose.getRotation().getRadians()));
       }
 
       else if (m_side.equals(ReefPosition.LEFT)){
         m_targetTranslation = new Translation2d(
-            targetPose.getX()
-            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(targetPose.getRotation().getRadians())
-            - AutoAlignConstants.REEF_OFFSET_LEFT * Math.cos(Math.PI/2 + targetPose.getRotation().getRadians()), 
-            targetPose.getY()
-            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians())
-            - AutoAlignConstants.REEF_OFFSET_LEFT * Math.sin(Math.PI/2 + targetPose.getRotation().getRadians()));
+            aprilTagPose.getX()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(aprilTagPose.getRotation().getRadians())
+            - AutoAlignConstants.REEF_OFFSET_LEFT * Math.cos(Math.PI/2 + aprilTagPose.getRotation().getRadians()), 
+            aprilTagPose.getY()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(aprilTagPose.getRotation().getRadians())
+            - AutoAlignConstants.REEF_OFFSET_LEFT * Math.sin(Math.PI/2 + aprilTagPose.getRotation().getRadians()));
       }
       else{
         m_targetTranslation = new Translation2d(
-          targetPose.getX() 
-          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(targetPose.getRotation().getRadians()),
-          targetPose.getY()
-          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians()));
+          aprilTagPose.getX() 
+          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(aprilTagPose.getRotation().getRadians()),
+          aprilTagPose.getY()
+          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(aprilTagPose.getRotation().getRadians()));
     
       }
       m_targetIntermediateTranslation = m_targetTranslation.plus(new Translation2d(
-            AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.cos(targetPose.getRotation().getRadians()),
-            AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.sin(targetPose.getRotation().getRadians())
+            AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.cos(aprilTagPose.getRotation().getRadians()),
+            AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.sin(aprilTagPose.getRotation().getRadians())
           ));
     }
-    m_targetRotation = targetPose.getRotation().plus(Rotation2d.fromRadians(Math.PI));
+    else{
+      m_targetTranslation = m_drivetrain.getState().Pose.getTranslation();
+      m_targetIntermediateTranslation = m_drivetrain.getState().Pose.getTranslation();
+    }
+
+    // getting the target rotation by taking the rotation of the apriltag but then adding pi since want to be perpendicular
+    m_targetRotation = aprilTagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI));
+
 
     xController.reset(m_drivetrain.getState().Pose.getX());
     yController.reset(m_drivetrain.getState().Pose.getY());
@@ -117,13 +127,16 @@ public class AutorotateCommand extends Command {
     double xVelocity;
     double yVelocity;
 
+    // at intermediate translatin, may want to go at a slower velocity/acceleration
     
     if (! reachedIntermediateTranslation) {
       xController.setConstraints(normalConstraints);
       yController.setConstraints(normalConstraints);
-    
+      
+      // getting the x and y velocities and using the trapezoid constraints so that it updates velocity based on position
       xVelocity = xController.calculate(m_drivetrain.getState().Pose.getX(), m_targetIntermediateTranslation.getX()) + xController.getSetpoint().velocity;
       yVelocity = yController.calculate(m_drivetrain.getState().Pose.getY(), m_targetIntermediateTranslation.getY()) + yController.getSetpoint().velocity;
+      // checking if aligned
       reachedIntermediateTranslation = isAligned(m_targetIntermediateTranslation);
     } 
     else {
@@ -134,7 +147,7 @@ public class AutorotateCommand extends Command {
       yVelocity = yController.calculate(m_drivetrain.getState().Pose.getY(), m_targetTranslation.getY()) + yController.getSetpoint().velocity;
     }
         
-   
+  
     m_drivetrain.setControl(driveRequest
     .withVelocityX(xVelocity)
     .withVelocityY(yVelocity)
@@ -151,6 +164,8 @@ public class AutorotateCommand extends Command {
   public boolean isFinished() {
     return false;
   }
+
+  // checking if the drivetrain is aligned and discarding a small margin of error
   public boolean isAligned(Translation2d translation) {
     Pose2d drivetrainPose = m_drivetrain.getState().Pose;
     // change to absolute value?
