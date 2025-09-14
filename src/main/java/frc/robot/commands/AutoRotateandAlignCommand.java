@@ -113,7 +113,7 @@ public class AutoRotateandAlignCommand extends Command {
     driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
-    SmartDashboard.putString("drivetoreef/target robot translation", m_targetRotation.toString());
+    SmartDashboard.putString("drivetoreef/target robot translation", m_targetTranslation.toString());
 
   }
 
