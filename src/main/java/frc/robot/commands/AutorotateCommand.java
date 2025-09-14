@@ -1,0 +1,90 @@
+package frc.robot.commands;
+
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.AutoAlignConstants;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+/** An example command that uses an example subsystem. */
+public class AutorotateCommand extends Command {
+    public enum ReefPosition {
+        LEFT, RIGHT
+    }
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final CommandSwerveDrivetrain m_drivetrain;
+  private final ReefPosition m_side;
+  private Rotation2d m_targetRotation;
+
+  private final ProfiledPIDController xController = new ProfiledPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D, new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA));
+  private final ProfiledPIDController yController = new ProfiledPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D, new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA));
+  private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle().withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
+  
+
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public AutorotateCommand(CommandSwerveDrivetrain drivetrain, ReefPosition side) {
+    m_drivetrain = drivetrain;
+    m_side = side;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivetrain);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    
+
+    // add visionutils later (assuming it exists)
+    Pose2d targetPose = VisionUtils.getClosestReefAprilTag(m_drivetrain.getState().Pose);
+
+
+    m_targetRotation = targetPose.getRotation().plus(Rotation2d.fromRadians(Math.PI));
+
+
+    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
+    driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
+      
+    SmartDashboard.putNumber("drivetoreef/target robot rotation", m_targetRotation.getRadians());
+
+    
+
+  }
+
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+        
+   
+    m_drivetrain.setControl(driveRequest
+      .withVelocityX(0)
+      .withVelocityY(0)
+      .withTargetDirection(m_targetRotation));
+  }
+
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+}
