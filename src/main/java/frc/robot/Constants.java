@@ -47,5 +47,10 @@ public class Constants {
         public static final double REEF_OFFSET_RIGHT = 10;
         public static final double REEF_OFFSET_LEFT = 10;
         public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
+        public static final double kMaxV = 2; // to be tuned
+        public static final double kMaxA = 2.5; // to be tuned
+    
+        public static final double kMaxIntermediateV = 2; // to be tuned
+        public static final double kMaxIntermediateA = 1.5; // to be tuned
     }
 }

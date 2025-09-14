@@ -20,13 +20,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /** An example command that uses an example subsystem. */
 public class AutorotateCommand extends Command {
     public enum ReefPosition {
-        LEFT, RIGHT
+        LEFT, RIGHT, CENTER
     }
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final CommandSwerveDrivetrain m_drivetrain;
   private final ReefPosition m_side;
+  private boolean reachedIntermediateTranslation = false; 
+
   private Rotation2d m_targetRotation;
   private Translation2d m_targetTranslation;
+  private Translation2d m_targetIntermediateTranslation;
+
+  
+  private final TrapezoidProfile.Constraints intermediateConstraints = new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxIntermediateV, AutoAlignConstants.kMaxIntermediateA);
+  private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA);
+
 
   private final ProfiledPIDController xController = new ProfiledPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D, new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA));
   private final ProfiledPIDController yController = new ProfiledPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D, new TrapezoidProfile.Constraints(AutoAlignConstants.kMaxV, AutoAlignConstants.kMaxA));
@@ -66,15 +74,30 @@ public class AutorotateCommand extends Command {
             + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians())
             + AutoAlignConstants.REEF_OFFSET_RIGHT * Math.sin(Math.PI/2 + targetPose.getRotation().getRadians()));
       }
+
+      else if (m_side.equals(ReefPosition.LEFT)){
+        m_targetTranslation = new Translation2d(
+            targetPose.getX()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cos(targetPose.getRotation().getRadians())
+            - AutoAlignConstants.REEF_OFFSET_LEFT * Math.cos(Math.PI/2 + targetPose.getRotation().getRadians()), 
+            targetPose.getY()
+            + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.sin(targetPose.getRotation().getRadians())
+            - AutoAlignConstants.REEF_OFFSET_LEFT * Math.sin(Math.PI/2 + targetPose.getRotation().getRadians()));
+      }
+      else{
+        m_targetTranslation = new Translation2d(
+          targetPose.getX() 
+          + DrivetrainConstants.ROBOT_SIZE_X/2 * Math.cose(targetPose.getRotation().getRadians())
+        )
+      }
+      m_targetIntermediateTranslation = m_targetTranslation.plus(new Translation2d(
+            AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.cos(targetPose.getRotation().getRadians()),
+            AutoAlignConstants.INTERMEDIATE_POS_DIST * Math.sin(targetPose.getRotation().getRadians())
+          ));
     }
 
-
-    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
-    driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
-
-    
 
   }
 
@@ -82,6 +105,28 @@ public class AutorotateCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double xVelocity;
+    double yVelocity;
+
+    xController.reset(m_drivetrain.getState().Pose.getX());
+    yController.reset(m_drivetrain.getState().Pose.getY());
+
+    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
+    driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
+    if (! reachedIntermediateTranslation) {
+      xController.setConstraints(normalConstraints);
+      yController.setConstraints(normalConstraints);
+    
+      xVelocity = xController.calculate(m_drivetrain.getState().Pose.getX(), m_targetIntermediateTranslation.getX()) + xController.getSetpoint().velocity;
+      yVelocity = yController.calculate(m_drivetrain.getState().Pose.getY(), m_targetIntermediateTranslation.getY()) + yController.getSetpoint().velocity;
+      reachedIntermediateTranslation = isAligned(m_targetIntermediateTranslation);
+    } else {
+      xController.setConstraints(intermediateConstraints);
+      yController.setConstraints(intermediateConstraints);
+
+      xVelocity = xController.calculate(m_drivetrain.getState().Pose.getX(), m_targetTranslation.getX()) + xController.getSetpoint().velocity;
+      yVelocity = yController.calculate(m_drivetrain.getState().Pose.getY(), m_targetTranslation.getY()) + yController.getSetpoint().velocity;
+    }
         
    
     m_drivetrain.setControl(driveRequest
