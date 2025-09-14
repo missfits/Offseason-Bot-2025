@@ -58,16 +58,13 @@ public class AutoRotateandAlignCommand extends Command {
   @Override
   public void initialize() {
     
-
     // add visionutils later (assuming it exists)
-    // targetPose is the targetPose of the april tag
     Pose2d aprilTagPose = VisionUtils.getClosestReefAprilTag(m_drivetrain.getState().Pose);
 
-
-    
-
     if (aprilTagPose != null){
-    // if we assume aligning to the center, want to be Robot size /2 away from the april tag at an angle perpendicular. Then we align to the left/right/center
+      // if we assume aligning to the center, want to be Robot size /2 away from the april tag at a perpendicular angle. 
+      // then we align to the left/right/center
+      // essentially calculating the targetPose based off of the apriltagPose
       if (m_side.equals(ReefPosition.RIGHT)){
         m_targetTranslation = new Translation2d(
             aprilTagPose.getX()
@@ -116,6 +113,7 @@ public class AutoRotateandAlignCommand extends Command {
     driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
+    SmartDashboard.putString("drivetoreef/target robot translation", m_targetRotation.toString());
 
   }
 
@@ -127,7 +125,7 @@ public class AutoRotateandAlignCommand extends Command {
     double xVelocity;
     double yVelocity;
 
-    // at intermediate translatin, may want to go at a slower velocity/acceleration
+    // at intermediate translation, may want to go at a slower velocity/acceleration
     
     if (! reachedIntermediateTranslation) {
       xController.setConstraints(normalConstraints);
