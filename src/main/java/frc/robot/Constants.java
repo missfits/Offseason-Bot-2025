@@ -33,8 +33,27 @@ public class Constants {
     public static class DrivetrainConstants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
+        public static final double ROTATION_kP = 5;
+        public static final double ROTATION_kI = 0;
+        public static final double ROTATION_kD = 0;
     }
+     
+    public static class RollerConstants {
+        //ALL OF THESE NEED TO BE ADJUSTED
+        public static final int ROLLER_MOTOR_ID = 23; // NEED TO CHANGE
+        public static final int MOTOR_STATOR_LIMIT = 20; // needs to be tuned
+
+        public static final int COUNTS_PER_REV = 42; // MIGHT NEED TO CHANGE
+
+        public static final double METERS_PER_ROTATION = 1; 
+        public static final double MAX_SPEED = 0.0; 
+        public static final double SPEED_LOWER_LIMIT = 0.0;
+        public static final double SPEED_UPPER_LIMIT = 0.0;
+
+        public static final double OUTTAKE_MOTOR_SPEED = 8.0; 
+        public static final double SLOW_OUTTAKE_MOTOR_SPEED = 2.0;
+    }
+
     public static class VisionConstants {
     public static final String CAMERA1_NAME = "beam_camera";  
     public static final String CAMERA2_NAME = "swerve_camera";  
@@ -84,4 +103,6 @@ public class Constants {
     public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
     public static final int NUM_LAST_EST_POSES = 3;
   }
+
 }
+
