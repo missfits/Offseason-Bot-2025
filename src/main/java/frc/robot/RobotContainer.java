@@ -19,8 +19,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.commands.AutorotateCommand;
-import frc.robot.commands.AutorotateCommand.ReefPosition;
+import frc.robot.commands.AutoRotateandAlignCommand;
+import frc.robot.commands.AutoRotateandAlignCommand.ReefPosition;
 
 public class RobotContainer {
 
@@ -89,8 +89,8 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.rightTrigger().whileTrue(new AutorotateCommand(drivetrain, ReefPosition.RIGHT)); 
-        joystick.leftTrigger().whileTrue(new AutorotateCommand(drivetrain, ReefPosition.LEFT)); 
+        joystick.rightTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
+        joystick.leftTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));

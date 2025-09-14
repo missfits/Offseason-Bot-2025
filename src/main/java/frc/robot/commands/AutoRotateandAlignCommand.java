@@ -19,7 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** An example command that uses an example subsystem. */
-public class AutorotateCommand extends Command {
+public class AutoRotateandAlignCommand extends Command {
     public enum ReefPosition {
         LEFT, RIGHT, CENTER
     }
@@ -47,7 +47,7 @@ public class AutorotateCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public AutorotateCommand(CommandSwerveDrivetrain drivetrain, ReefPosition side) {
+  public AutoRotateandAlignCommand(CommandSwerveDrivetrain drivetrain, ReefPosition side) {
     m_drivetrain = drivetrain;
     m_side = side;
     // Use addRequirements() here to declare subsystem dependencies.
