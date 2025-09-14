@@ -59,7 +59,7 @@ public class AutorotateCommand extends Command {
     driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
     driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
-    SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
+    SmartDashboard.putNumber("drivetoreef/target robot rotation", m_targetRotation.getRadians());
 
     
 
@@ -72,9 +72,9 @@ public class AutorotateCommand extends Command {
         
    
     m_drivetrain.setControl(driveRequest
-    .withVelocityX(0)
-    .withVelocityY(0)
-    .withTargetDirection(m_targetRotation));
+      .withVelocityX(0)
+      .withVelocityY(0)
+      .withTargetDirection(m_targetRotation));
   }
 
 

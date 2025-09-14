@@ -1,7 +1,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
 
