@@ -20,6 +20,7 @@ import frc.robot.Constants.RollerConstants;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.roller.RollerCommandFactory;
 import frc.robot.subsystems.roller.RollerSubsystem;
 
 import frc.robot.Constants.DrivetrainConstants;
@@ -44,7 +45,10 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    public final RollerCommandFactory m_rollerCommandFactory = new RollerCommandFactory();
+
     public final RollerSubsystem m_roller = new RollerSubsystem();
+
 
     public RobotContainer() {
 
@@ -108,7 +112,7 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //bindings for roller subsystem
-        joystick.y().whileTrue(m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED));
+        joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
         m_roller.setDefaultCommand(m_roller.runRollerOff());
 
         drivetrain.registerTelemetry(logger::telemeterize);
