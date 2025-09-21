@@ -88,17 +88,11 @@ public class Constants {
     public static final double ROBOT_TO_CAM2_YAW = 0;
     public static final double ROBOT_TO_CAM2_PITCH = -Math.PI/9;
 
-    public static final Translation2d ROBOT_TO_CAM1 = 
-      new Translation2d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y); // in meters from center of robot to 2x4 camera mount
-
-    public static final Translation2d ROBOT_TO_CAM2 = 
-      new Translation2d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y); // in meters from center of robot to 2x4 camera mount
-
     public static final Transform3d ROBOT_TO_CAM1_3D = 
-      new Transform3d(new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z), new Rotation3d(0,0,0)); // in meters from center of robot to 2x4 camera mount
+      new Transform3d(new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z), new Rotation3d(ROBOT_TO_CAM1_ROLL,ROBOT_TO_CAM1_YAW,ROBOT_TO_CAM1_PITCH)); // in meters from center of robot to 2x4 camera mount
     
     public static final Transform3d ROBOT_TO_CAM2_3D = 
-      new Transform3d(new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z), new Rotation3d(0,0,-Math.PI/9)); // in meters from center of robot to 2x4 camera mount
+      new Transform3d(new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z), new Rotation3d(ROBOT_TO_CAM2_ROLL,ROBOT_TO_CAM2_YAW ,ROBOT_TO_CAM2_PITCH)); // in meters from center of robot to 2x4 camera mount
 
     public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
     public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
