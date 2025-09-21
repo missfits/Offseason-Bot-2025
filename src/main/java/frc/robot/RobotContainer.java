@@ -45,6 +45,7 @@ public class RobotContainer {
         configureBindings();
         createNamedCommands();
         m_autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", m_autoChooser);
     }
 
     private void configureBindings() {
