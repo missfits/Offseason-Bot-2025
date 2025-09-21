@@ -1,13 +1,11 @@
 
 package frc.robot.subsystems;
 
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -20,13 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
 
 import frc.robot.Constants.VisionConstants;
 import frc.robot.VisionUtils;
@@ -47,9 +45,8 @@ public class LocalizationCamera {
   private final Field2d m_estPoseField = new Field2d(); // field pose estimator
   private PhotonPoseEstimator poseEstimator;
 
-  private PhotonTrackedTarget m_target;
+  private PhotonTrackedTarget m_apriltagTarget;
   private ArrayList<EstimatedRobotPose> m_lastEstPoses = new ArrayList<>();
-
 
   public LocalizationCamera(String cameraName, Transform3d robotToCam) {
     m_cameraName = cameraName;
@@ -64,11 +61,11 @@ public class LocalizationCamera {
   }
 
   public PhotonTrackedTarget getTarget() {
-    return m_target;
+    return m_apriltagTarget;
   }
 
   public Double getTargetPoseAmbiguity() {
-    return m_target.getPoseAmbiguity();
+    return m_apriltagTarget.getPoseAmbiguity();
   }
 
   public boolean getTargetFound() {
@@ -100,13 +97,14 @@ public class LocalizationCamera {
 
   
   // processes all targets
-  // uses area, standard deviation checks (outlier results?), "jumpiness" (are readings sporadic/random-looking?), and "sane-ness" (are readings > pre-determined maximum constants?) 
+  // uses area, standard deviation checks (outlier results?) and "sane-ness" (are readings > pre-determined maximum constants?) 
   public void findTarget() {
 
-      ArrayList<Integer> targetIds = new ArrayList<>();
+      ArrayList<Integer> apriltagIDs = new ArrayList<>();
       ArrayList<Double> targetPoseAmbiguity = new ArrayList<>();
+      List<PhotonPipelineResult> results;
 
-        var results = m_camera.getAllUnreadResults();
+      results = m_camera.getAllUnreadResults();
 
         if (!results.isEmpty()){
             // Camera processed a new frame since last
@@ -118,21 +116,22 @@ public class LocalizationCamera {
                 double biggestTargetArea = 0;
 
                 for (PhotonTrackedTarget sampleTarget : result.getTargets()){
-                    targetIds.add(sampleTarget.getFiducialId());
+                    apriltagIDs.add(sampleTarget.getFiducialId());
                     targetPoseAmbiguity.add(sampleTarget.getPoseAmbiguity());
                     //loops through every sample target in results.getTargets()
                     //if the sample target's area is bigger than the biggestTargetArea, then the sample target
                     // is set to the target, and the biggest Target Area is set to the sample's target area
+                    // we want the april tag with the biggest area since that means it is the closest
                     if (sampleTarget.getArea() > biggestTargetArea){
                         biggestTargetArea = sampleTarget.getArea();
-                        m_target = sampleTarget;
+                        m_apriltagTarget = sampleTarget;
                     }
                 }
 
-                SmartDashboard.putNumber("vision/" + m_camera + "Alternate Target X", m_target.getBestCameraToTarget().getX());
-                SmartDashboard.putNumber("vision/" + m_camera + "Alternate Target Y", m_target.getBestCameraToTarget().getY());
+                SmartDashboard.putNumber("vision/" + m_camera + "Alternate Target X", m_apriltagTarget.getBestCameraToTarget().getX());
+                SmartDashboard.putNumber("vision/" + m_camera + "Alternate Target Y", m_apriltagTarget.getBestCameraToTarget().getY());
 
-                if (m_target.getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
+                if (m_apriltagTarget.getPoseAmbiguity() > VisionConstants.MAX_POSE_AMBIGUITY) {
                     SmartDashboard.putString("vision/" + m_cameraName + "/targetState", "targetDiscardedAmbiguity");
                     targetFound = false;
                   } else {
@@ -174,7 +173,7 @@ public class LocalizationCamera {
         SmartDashboard.putBoolean("vision/" + m_cameraName + "/isConnected", m_camera.isConnected());
         SmartDashboard.putBoolean("vision/" + m_cameraName + "/isNewResult", getIsNewResult());
 
-        SmartDashboard.putNumberArray("vision/" + m_cameraName + "/Targets Seen", targetIds.stream().mapToDouble(Integer::doubleValue).toArray());
+        SmartDashboard.putNumberArray("vision/" + m_cameraName + "/Targets Seen", apriltagIDs.stream().mapToDouble(Integer::doubleValue).toArray());
         SmartDashboard.putNumberArray("vision/" + m_cameraName + "/Target Pose Ambiguities", targetPoseAmbiguity.stream().mapToDouble(Double::doubleValue).toArray());
         SmartDashboard.putBoolean("vision/" + m_cameraName + "/Target Found", targetFound);
 
@@ -232,7 +231,8 @@ public class LocalizationCamera {
     }
   }
 
-  // checks sporadic-ness of the vision readings based on the last 3 previous readings by comparing average distances
+  // checks if the pose is jumpy based on avg speed since by calculating based on speed, 
+  // the camera fps doesn't matter as the speed between readings will still be the same. this is based on last 3 readings
   public boolean isEstPoseJumpy() {
     if (m_lastEstPoses.size() < VisionConstants.NUM_LAST_EST_POSES) {
       return true;
@@ -261,3 +261,4 @@ public class LocalizationCamera {
     return avgSpeed > VisionConstants.MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES;
   }
 }
+

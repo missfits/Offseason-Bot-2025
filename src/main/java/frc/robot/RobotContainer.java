@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +12,6 @@ import org.photonvision.EstimatedRobotPose;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,7 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.RollerConstants;
 
 import frc.robot.generated.TunerConstants;
@@ -39,13 +35,6 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.VisionConstants;
 
 public class RobotContainer {
-    public enum RobotName {
-        CERIDWEN,
-        DYNAMENE
-    }
-    public static RobotName name = RobotName.CERIDWEN;
-
-
 
     public record JoystickVals(double x, double y) {}
     
