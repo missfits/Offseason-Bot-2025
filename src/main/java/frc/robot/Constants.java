@@ -39,8 +39,6 @@ public class Constants {
         public static final double ROBOT_SIZE_X = 10; // need to measure ceridwen to find this value, 10 meters (def wrong) is just for now
 
 
-        public static final double ROBOT_SIZE_X = 10;
-
         // copy pasted from robot code 2025 (lines 28 to 43)
         public static final double ROBOT_ROTATION_P = 5; // 11.507 from rotation sys-id @PF 1/13
         public static final double ROBOT_ROTATION_I = 0;
