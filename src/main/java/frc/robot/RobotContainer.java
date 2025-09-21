@@ -42,9 +42,8 @@ public class RobotContainer {
     public final RollerSubsystem m_roller = new RollerSubsystem();
 
     public RobotContainer() {
-
-
         configureBindings();
+        createNamedCommands();
         m_autoChooser = AutoBuilder.buildAutoChooser();
     }
 
@@ -100,16 +99,16 @@ public class RobotContainer {
         // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-  }
+    }
     
+    private void createNamedCommands() {
+        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED));
+    }
 
     // This method loads the auto when it is called, however, it is recommended
     // to first load your paths/autos when code starts, then return the
     // pre-loaded auto/path
     public Command getAutonomousCommand() {
         return m_autoChooser.getSelected();
-        
-    
     }
 }
