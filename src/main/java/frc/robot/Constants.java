@@ -2,6 +2,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.TunerConstants;
 
@@ -23,6 +25,10 @@ public class Constants {
     public static class DrivetrainConstants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
+        
+        public static final double ROBOT_SIZE_X = 10; // need to measure ceridwen to find this value, 10 meters (def wrong) is just for now
+
 
         public static final double ROBOT_SIZE_X = 10;
 
@@ -68,8 +74,22 @@ public class Constants {
     public static class AutoAlignConstants {
         public static final double REEF_OFFSET_RIGHT = 10;
         public static final double REEF_OFFSET_LEFT = 10;
+
+        public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
+
+        public static final double kMaxV = 2; // to be tuned
+        public static final double kMaxA = 2.5; // to be tuned
+    
+        public static final double kMaxIntermediateV = 2; // to be tuned
+        public static final double kMaxIntermediateA = 1.5; // to be tuned
+    }
+
+    public static class VisionConstants{
+        public static final double VISION_ALIGNMENT_DISCARD = Units.inchesToMeters(1); // in meters
+    }
         public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
     }
+
 
 }
 
