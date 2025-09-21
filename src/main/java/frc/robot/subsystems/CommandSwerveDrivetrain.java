@@ -10,10 +10,8 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentricFacingAngle;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
-import com.ctre.phoenix6.swerve.SwerveRequest.PointWheelsAt;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import edu.wpi.first.math.Matrix;
@@ -54,15 +52,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
-    
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric m_drive = new SwerveRequest.FieldCentric()
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+
+
     private final SwerveRequest.FieldCentricFacingAngle m_driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
         .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
-    private final SwerveRequest.PointWheelsAt m_point = new SwerveRequest.PointWheelsAt();
-    private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
-            
+  
+    private final SwerveRequest.SwerveDriveBrake m_brakeRequest = new SwerveRequest.SwerveDriveBrake();
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -238,35 +234,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
-
-    // ----- DEFAULT DRIVE -----
-    public FieldCentric defaultDrive(JoystickVals transVals, JoystickVals rotVals, boolean slowmode) {
-
-        SmartDashboard.putNumber("controller/left x", transVals.x());
-        SmartDashboard.putNumber("controller/left y", transVals.y());
-        SmartDashboard.putNumber("controller/right x", rotVals.x());
-        SmartDashboard.putNumber("controller/right y", rotVals.y());
+    
+    public Command resetPigeon(){
+        return new InstantCommand(
+            () -> this.getPigeon2().reset()
+        );
         
-        JoystickVals shapedTrans = Controls.inputShape(transVals.x(), transVals.y(), true);
-        JoystickVals shapedRot = Controls.inputShape(rotVals.x(), rotVals.y(), false);
-        
-        if (slowmode) {
-            shapedTrans = Controls.adjustSlowmode(shapedTrans);
-            shapedRot = Controls.adjustSlowmode(shapedRot);
-        }
-
-        return m_drive.withVelocityX(-shapedTrans.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
-            .withVelocityY(-shapedTrans.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
-            .withRotationalRate(-shapedRot.x() * DrivetrainConstants.MAX_ROTATION_SPEED); // Drive counterclockwise with negative X (left)
     }
 
-    // ----- SNAP TO ANGLE -----
     public FieldCentricFacingAngle snapToAngle(CommandXboxController joystick, double angle){
         SmartDashboard.putNumber("drivetrain/snap to angle", angle);
         JoystickVals shapedValues = Controls.inputShape(joystick.getLeftX(), joystick.getLeftY(), true );
         return m_driveFacingAngle.withVelocityX(-shapedValues.y() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive forward with negative Y (forward)
             .withVelocityY(-shapedValues.x() * DrivetrainConstants.MAX_TRANSLATION_SPEED) // Drive left with negative X (left)
             .withTargetDirection(Rotation2d.fromDegrees(angle));
+        
     } 
 
     public void setHeadingController(){
@@ -274,27 +256,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_driveFacingAngle.HeadingController.enableContinuousInput(0, 2*Math.PI);
     }
 
-    public Command resetPigeon() {
-        return new InstantCommand(
-            () -> this.getPigeon2().reset()
-        );
-    }
 
-    // ----- POINT WHEELS IN X -----
-    private void executePointWheelsinX() {
-        setControl(m_brake);
-    }
-
-    public Command pointWheelsInX() {
-        return new RunCommand(
-            () -> executePointWheelsinX()
-        ).withName("Point Wheels in X Configuration");
-    }
-
-    // ----- POINT -----
-    public PointWheelsAt point(JoystickVals vals) {
-        return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
-    }
 
     @Override
     public void periodic() {
@@ -330,5 +292,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
+    }
+
+    private void executePointWheelsinX(){
+        setControl(m_brakeRequest);
+    }
+    public Command pointWheelsInX(){
+
+        return new RunCommand(
+            () -> executePointWheelsinX()
+        ).withName("Point Wheels in X Configuration");
+
     }
 }
