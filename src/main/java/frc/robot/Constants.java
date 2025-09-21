@@ -54,49 +54,49 @@ public class Constants {
     }
 
     public static class VisionConstants {
-    public static final String CAMERA1_NAME = "beam_camera";  
-    public static final String CAMERA2_NAME = "swerve_camera";  
+        public static final String CAMERA1_NAME = "beam_camera";  
+        public static final String CAMERA2_NAME = "swerve_camera";  
 
 
-    // all of these values are from dynamene and need to be fine tuned
-    public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-2); // in meters from center of robot 
-    public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(-1); // in meters from center of robot 
-    public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(17); // in meters from the floor?
-    
-    public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(13-4.75); // in meters from center of robot 
-    public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(13-3.125); // in meters from center of robot 
-    public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(7.5); // in meters from the floor?
-    
+        // all of these values are from dynamene and need to be fine tuned
+        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-2); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(-1); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(17); // in meters from the floor?
+        
+        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(13-4.75); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(13-3.125); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(7.5); // in meters from the floor?
+        
 
-    // default vision standard deviation
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(6, 6, 4);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 0.3);
+        // default vision standard deviation
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(6, 6, 4);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 0.3);
 
-    public static final double MAX_POSE_AMBIGUITY = 0.2;
-    public static final double MAX_VISION_POSE_DISTANCE = 1;
-    public static final double MAX_VISION_POSE_Z = 0.1;
-    public static final double MAX_VISION_POSE_ROLL = 0.05; // in radians
-    public static final double MAX_VISION_POSE_PITCH = 0.05; // in radians
-    public static final double VISION_DISTANCE_DISCARD = 10; 
+        public static final double MAX_POSE_AMBIGUITY = 0.2;
+        public static final double MAX_VISION_POSE_DISTANCE = 1;
+        public static final double MAX_VISION_POSE_Z = 0.1;
+        public static final double MAX_VISION_POSE_ROLL = 0.05; // in radians
+        public static final double MAX_VISION_POSE_PITCH = 0.05; // in radians
+        public static final double VISION_DISTANCE_DISCARD = 10; 
 
-    // all of these constants need to be tuned as well
-    public static final double ROBOT_TO_CAM1_ROLL = 0;
-    public static final double ROBOT_TO_CAM1_YAW = 0;
-    public static final double ROBOT_TO_CAM1_PITCH = 0;
+        // all of these constants need to be tuned as well
+        public static final double ROBOT_TO_CAM1_ROLL = 0;
+        public static final double ROBOT_TO_CAM1_YAW = 0;
+        public static final double ROBOT_TO_CAM1_PITCH = 0;
 
-    public static final double ROBOT_TO_CAM2_ROLL = 0;
-    public static final double ROBOT_TO_CAM2_YAW = 0;
-    public static final double ROBOT_TO_CAM2_PITCH = -Math.PI/9;
+        public static final double ROBOT_TO_CAM2_ROLL = 0;
+        public static final double ROBOT_TO_CAM2_YAW = 0;
+        public static final double ROBOT_TO_CAM2_PITCH = -Math.PI/9;
 
-    public static final Transform3d ROBOT_TO_CAM1_3D = 
-      new Transform3d(new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z), new Rotation3d(ROBOT_TO_CAM1_ROLL,ROBOT_TO_CAM1_YAW,ROBOT_TO_CAM1_PITCH)); // in meters from center of robot to 2x4 camera mount
-    
-    public static final Transform3d ROBOT_TO_CAM2_3D = 
-      new Transform3d(new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z), new Rotation3d(ROBOT_TO_CAM2_ROLL,ROBOT_TO_CAM2_YAW ,ROBOT_TO_CAM2_PITCH)); // in meters from center of robot to 2x4 camera mount
+        public static final Transform3d ROBOT_TO_CAM1_3D = 
+          new Transform3d(new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z), new Rotation3d(ROBOT_TO_CAM1_ROLL,ROBOT_TO_CAM1_YAW,ROBOT_TO_CAM1_PITCH)); // in meters from center of robot to 2x4 camera mount
+        
+        public static final Transform3d ROBOT_TO_CAM2_3D = 
+          new Transform3d(new Translation3d(ROBOT_TO_CAM2_X, ROBOT_TO_CAM2_Y, ROBOT_TO_CAM2_Z), new Rotation3d(ROBOT_TO_CAM2_ROLL,ROBOT_TO_CAM2_YAW ,ROBOT_TO_CAM2_PITCH)); // in meters from center of robot to 2x4 camera mount
 
-    public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
-    public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
-    public static final int NUM_LAST_EST_POSES = 3;
+        public static final double MAX_AVG_DIST_BETWEEN_LAST_EST_POSES = 0.3; // in meters 
+        public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
+        public static final int NUM_LAST_EST_POSES = 3;
   }
 
 }
