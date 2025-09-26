@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RollerConstants;
 
@@ -98,7 +99,6 @@ public class RobotContainer {
         joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
         m_roller.setDefaultCommand(m_roller.runRollerOff());
 
-
         drivetrain.registerTelemetry(logger::telemeterize);
         drivetrain.setHeadingController();
 
@@ -118,6 +118,10 @@ public class RobotContainer {
         joystick.leftTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
         joystick.y().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.CENTER));
 
+        joystick.a().whileTrue(autoScoreCommand(ReefPosition.LEFT));
+        joystick.b().whileTrue(autoScoreCommand(ReefPosition.CENTER));
+        joystick.x().whileTrue(autoScoreCommand(ReefPosition.RIGHT));
+
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -128,6 +132,13 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
+    }
+
+     
+    public Command autoScoreCommand(ReefPosition side) {
+      return new SequentialCommandGroup(
+        new AutoRotateandAlignCommand(drivetrain, side), 
+        m_rollerCommandFactory.runRoller());
     }
 
     public void updatePoseEst() {
