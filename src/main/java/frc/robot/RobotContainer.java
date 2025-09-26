@@ -94,11 +94,10 @@ public class RobotContainer {
                 new JoystickVals(joystick.getLeftX(), joystick.getLeftY()))
             )
         );
-
-
         //bindings for roller subsystem
-        joystick.y().whileTrue(m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED));
+        joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
         m_roller.setDefaultCommand(m_roller.runRollerOff());
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
         drivetrain.setHeadingController();
@@ -121,10 +120,6 @@ public class RobotContainer {
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-        //bindings for roller subsystem
-        joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
-        m_roller.setDefaultCommand(m_roller.runRollerOff());
 
         drivetrain.registerTelemetry(logger::telemeterize);
         CameraServer.startAutomaticCapture();
