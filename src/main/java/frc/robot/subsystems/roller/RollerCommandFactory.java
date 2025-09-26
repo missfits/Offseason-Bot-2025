@@ -4,9 +4,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.RollerConstants;
 
 public class RollerCommandFactory {
-    private RollerSubsystem m_subsystem = new RollerSubsystem();
+    private RollerSubsystem m_subsystem;
 
-    public RollerCommandFactory() {}
+    public RollerCommandFactory(RollerSubsystem roller) {
+        m_subsystem = roller;
+    }
 
     public Command runRoller() {
         return m_subsystem.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED);

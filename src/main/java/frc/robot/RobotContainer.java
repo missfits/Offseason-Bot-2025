@@ -42,13 +42,10 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
     
-
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
-    public final RollerCommandFactory m_rollerCommandFactory = new RollerCommandFactory();
-
     public final RollerSubsystem m_roller = new RollerSubsystem();
 
+    public final RollerCommandFactory m_rollerCommandFactory = new RollerCommandFactory(m_roller);
 
     public RobotContainer() {
 
