@@ -10,13 +10,13 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,7 +33,6 @@ import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.subsystems.LocalizationCamera;
 import frc.robot.subsystems.VisionSubsystem;
 
-import frc.robot.subsystems.roller.RollerSubsystem;
 import frc.robot.Constants.DrivetrainConstants;
 
 import frc.robot.Constants.VisionConstants;
@@ -60,7 +59,11 @@ public class RobotContainer {
 
 
     public RobotContainer() {
-        configureBindings();
+      // Starts recording to data log
+      DataLogManager.start();
+      // Record only DS control data
+      DriverStation.startDataLog(DataLogManager.getLog(), false);
+      configureBindings();
     }
 
     private void configureBindings() {
