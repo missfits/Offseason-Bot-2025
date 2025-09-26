@@ -27,6 +27,8 @@ import frc.robot.Constants.RollerConstants;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.roller.RollerCommandFactory;
+import frc.robot.subsystems.roller.RollerSubsystem;
 
 import frc.robot.subsystems.LocalizationCamera;
 import frc.robot.subsystems.VisionSubsystem;
@@ -49,12 +51,12 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final RollerSubsystem m_roller = new RollerSubsystem();
 
+    public final RollerCommandFactory m_rollerCommandFactory = new RollerCommandFactory(m_roller);
 
     private final VisionSubsystem m_vision = new VisionSubsystem();
     private final Field2d m_actualField = new Field2d();
-
-    public final RollerSubsystem m_roller = new RollerSubsystem();
 
 
     public RobotContainer() {
@@ -121,7 +123,7 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //bindings for roller subsystem
-        joystick.y().whileTrue(m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED));
+        joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
         m_roller.setDefaultCommand(m_roller.runRollerOff());
 
         drivetrain.registerTelemetry(logger::telemeterize);
@@ -143,40 +145,40 @@ public class RobotContainer {
     m_actualField.setRobotPose(drivetrain.getState().Pose);
   }
 
-    public void updatePoseEst(LocalizationCamera camera){
-      EstimatedRobotPose robotPose = camera.getRobotPose();
-      
-      if (robotPose != null && camera.getTargetFound() && camera.getIsNewResult()) {
-        Pose3d estPose3d = robotPose.estimatedPose; // estimated robot pose of vision
-        Pose2d estPose2d = estPose3d.toPose2d();
+  public void updatePoseEst(LocalizationCamera camera) {
+    EstimatedRobotPose robotPose = camera.getRobotPose();
+    
+    if (robotPose != null && camera.getTargetFound() && camera.getIsNewResult()) {
+      Pose3d estPose3d = robotPose.estimatedPose; // estimated robot pose of vision
+      Pose2d estPose2d = estPose3d.toPose2d();
 
-        // check if new estimated pose and previous pose are less than 2 meters apart (fused poseEst)
-        double distance = estPose2d.getTranslation().getDistance(drivetrain.getState().Pose.getTranslation());
+      // check if new estimated pose and previous pose are less than 2 meters apart (fused poseEst)
+      double distance = estPose2d.getTranslation().getDistance(drivetrain.getState().Pose.getTranslation());
 
-        SmartDashboard.putNumber("fusedVision/" + camera.getCameraName() + "/distanceBetweenVisionAndActualPose", distance);
-        if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE || !camera.isEstPoseJumpy()) {
-          drivetrain.setVisionMeasurementStdDevs(camera.getCurrentStdDevs());
-          
-          // sample drivetrain fusedPose before updating
-          Optional<Pose2d> samplePose = drivetrain.samplePoseAt(Utils.fpgaToCurrentTime(robotPose.timestampSeconds));
+      SmartDashboard.putNumber("fusedVision/" + camera.getCameraName() + "/distanceBetweenVisionAndActualPose", distance);
+      if (distance < VisionConstants.MAX_VISION_POSE_DISTANCE || !camera.isEstPoseJumpy()) {
+        drivetrain.setVisionMeasurementStdDevs(camera.getCurrentStdDevs());
+        
+        // sample drivetrain fusedPose before updating
+        Optional<Pose2d> samplePose = drivetrain.samplePoseAt(Utils.fpgaToCurrentTime(robotPose.timestampSeconds));
 
-          if (samplePose.isPresent()){
-            SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/samplePose",  new double [] {
-              samplePose.get().getX(), samplePose.get().getY(), samplePose.get().getRotation().getRadians()});
-          }
-          
-          SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/drivetrainBeforeUpdate", new double [] {
+        if (samplePose.isPresent()) {
+          SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/samplePose",  new double [] {
+            samplePose.get().getX(), samplePose.get().getY(), samplePose.get().getRotation().getRadians()});
+        }
+        
+        SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/drivetrainBeforeUpdate", new double [] {
           drivetrain.getState().Pose.getX(), drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation().getRadians()});
 
 
-          drivetrain.addVisionMeasurement(estPose2d, Utils.fpgaToCurrentTime(robotPose.timestampSeconds));
-          camera.updateField(estPose2d);
+        drivetrain.addVisionMeasurement(estPose2d, Utils.fpgaToCurrentTime(robotPose.timestampSeconds));
+        camera.updateField(estPose2d);
 
-          // sample drivetrain fusedPose after updating
-          SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/drivetrainAfterUpdate", new double [] {
-            drivetrain.getState().Pose.getX(), drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation().getRadians()});
-            
-          SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/visionPose2dFiltered" + camera.getCameraName(), new double[] {estPose2d.getX(), estPose2d.getY(), estPose2d.getRotation().getRadians()});
+        // sample drivetrain fusedPose after updating
+        SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/drivetrainAfterUpdate", new double [] {
+          drivetrain.getState().Pose.getX(), drivetrain.getState().Pose.getY(), drivetrain.getState().Pose.getRotation().getRadians()});
+          
+        SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/visionPose2dFiltered" + camera.getCameraName(), new double[] {estPose2d.getX(), estPose2d.getY(), estPose2d.getRotation().getRadians()});
       }
 
       SmartDashboard.putNumberArray("fusedVision/" + camera.getCameraName() + "/visionPose3D", new double[] {
@@ -187,6 +189,4 @@ public class RobotContainer {
       }); // post vision 3d to smartdashboard
     }
   }
-
 }
-
