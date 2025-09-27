@@ -139,7 +139,7 @@ public class RobotContainer {
       return new SequentialCommandGroup(
         new AutoRotateandAlignCommand(drivetrain, side)
           .until(drivetrain.isAutoAlignedTrigger()), 
-        m_rollerCommandFactory.runRoller());
+        m_rollerCommandFactory.runRollerWithTimeout());
     }
 
     public void updatePoseEst() {
