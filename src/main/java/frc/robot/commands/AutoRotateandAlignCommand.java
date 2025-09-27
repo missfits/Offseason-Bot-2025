@@ -115,7 +115,6 @@ public class AutoRotateandAlignCommand extends Command {
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
     SmartDashboard.putString("drivetoreef/target robot translation", m_targetTranslation.toString());
-
   }
 
 
@@ -170,8 +169,8 @@ public class AutoRotateandAlignCommand extends Command {
     // change to absolute value?
     double xDist = Math.abs(drivetrainPose.getX() - translation.getX());
     double yDist = Math.abs(drivetrainPose.getY() - translation.getY());
-    SmartDashboard.putNumber("drivetrain/auto-alignment-xdist", xDist);
-    SmartDashboard.putNumber("drivetrain/auto-alignment-ydist", yDist);
+    SmartDashboard.putNumber("drivetoreef/auto-alignment-xdist", xDist);
+    SmartDashboard.putNumber("drivetoreef/auto-alignment-ydist", yDist);
     return ((xDist < VisionConstants.VISION_ALIGNMENT_DISCARD) && (yDist < VisionConstants.VISION_ALIGNMENT_DISCARD));
   }
 }
