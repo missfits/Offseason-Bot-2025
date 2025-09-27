@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Controls;
 import frc.robot.Constants.DrivetrainConstants;
@@ -62,7 +63,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         .withDriveRequestType(DriveRequestType.Velocity).withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective);
     private final SwerveRequest.PointWheelsAt m_point = new SwerveRequest.PointWheelsAt();
     private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
-            
+
+    private boolean m_isAutoAligned = false;
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -294,6 +296,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // ----- POINT -----
     public PointWheelsAt point(JoystickVals vals) {
         return m_point.withModuleDirection(new Rotation2d(-vals.y(), -vals.x()));
+    }
+
+    // ----- TRIGGERS -----
+    public Trigger isAutoAlignedTrigger() {
+        return new Trigger(() -> isAutoAligned());
+    }
+
+    public boolean isAutoAligned() {
+        return m_isAutoAligned;
+    }
+    public void setIsAutoAligned(boolean value) {
+        m_isAutoAligned = value;
     }
 
     @Override
