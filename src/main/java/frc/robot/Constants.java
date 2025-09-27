@@ -40,6 +40,22 @@ public class Constants {
 
 
         // copy pasted from robot code 2025 (lines 28 to 43)
+        public static final double STEER_P = 100; 
+        public static final double STEER_I = 0; 
+        public static final double STEER_D = 0.5; 
+
+        public static final double STEER_KS = 0.1; 
+        public static final double STEER_KV = 2.66; 
+        public static final double STEER_KA = 0; 
+
+
+        public static final double DRIVE_P = 0.1; 
+        public static final double DRIVE_I = 0; 
+        public static final double DRIVE_D = 0; 
+
+        public static final double DRIVE_KS = 0; 
+        public static final double DRIVE_KV = 0.124; 
+
         public static final double ROBOT_ROTATION_P = 5; // 11.507 from rotation sys-id @PF 1/13
         public static final double ROBOT_ROTATION_I = 0;
         public static final double ROBOT_ROTATION_D = 0; // 0.10877 from rotation sys-id @PF 1/13
