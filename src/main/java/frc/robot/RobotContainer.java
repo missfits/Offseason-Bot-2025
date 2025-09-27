@@ -146,6 +146,7 @@ public class RobotContainer {
     }
     
     m_actualField.setRobotPose(drivetrain.getState().Pose);
+    SmartDashboard.putData(m_actualField);
   }
 
   public void updatePoseEst(LocalizationCamera camera) {
