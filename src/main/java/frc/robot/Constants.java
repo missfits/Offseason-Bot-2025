@@ -79,8 +79,8 @@ public class Constants {
     }
   
     public static class VisionConstants {
-        public static final String CAMERA1_NAME = "beam_camera";  
-        public static final String CAMERA2_NAME = "swerve_camera";  
+        public static final String CAMERA1_NAME = "camera1";  
+        public static final String CAMERA2_NAME = "camera2";  
 
 
         // all of these values are from dynamene and need to be fine tuned
