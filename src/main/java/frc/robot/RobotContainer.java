@@ -137,7 +137,8 @@ public class RobotContainer {
      
     public Command autoScoreCommand(ReefPosition side) {
       return new SequentialCommandGroup(
-        new AutoRotateandAlignCommand(drivetrain, side), 
+        new AutoRotateandAlignCommand(drivetrain, side)
+          .until(drivetrain.isAutoAlignedTrigger()), 
         m_rollerCommandFactory.runRoller());
     }
 
