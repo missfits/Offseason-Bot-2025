@@ -82,15 +82,13 @@ public class Constants {
         public static final String CAMERA1_NAME = "camera1";  
         public static final String CAMERA2_NAME = "camera2";  
 
-
-        // all of these values are from dynamene and need to be fine tuned
-        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-2); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(-1); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(17); // in meters from the floor?
+        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-(25.5/2-7.0/8)); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(25.5/2-2.5); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(6+3.0/8); // in meters from the floor?
         
-        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(13-4.75); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(13-3.125); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(7.5); // in meters from the floor?
+        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(25.5/2-5.0/8); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(25.5/2-2.75); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(6+5.0/8); // in meters from the floor?
         
 
         // default vision standard deviation
@@ -111,7 +109,7 @@ public class Constants {
 
         public static final double ROBOT_TO_CAM2_ROLL = 0;
         public static final double ROBOT_TO_CAM2_YAW = 0;
-        public static final double ROBOT_TO_CAM2_PITCH = -Math.PI/9;
+        public static final double ROBOT_TO_CAM2_PITCH = 0;
 
         public static final Transform3d ROBOT_TO_CAM1_3D = 
           new Transform3d(new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z), new Rotation3d(ROBOT_TO_CAM1_ROLL,ROBOT_TO_CAM1_YAW,ROBOT_TO_CAM1_PITCH)); // in meters from center of robot to 2x4 camera mount
