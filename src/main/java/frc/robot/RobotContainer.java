@@ -82,37 +82,38 @@ public class RobotContainer {
             )
         );
         
+        //bindings for roller subsystem
+        joystick.leftTrigger().and(joystick.a().negate()).whileTrue(m_rollerCommandFactory.runRoller());
+        
         // drive in slowmode
-        joystick.rightBumper().whileTrue(
+        joystick.rightTrigger().and(joystick.a().negate()).whileTrue(
             drivetrain.applyRequest(()-> drivetrain.defaultDrive(
                 new JoystickVals(joystick.getLeftX(), joystick.getLeftY()), 
                 new JoystickVals(joystick.getRightX(), joystick.getRightY()),
                 true)
             )
         );
-
+        
+        joystick.leftBumper().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
+        joystick.rightBumper().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
+        
         // point wheels in x configuration
         joystick.x().whileTrue(drivetrain.pointWheelsInX());
-        // reset the field-centric heading (robot forward direction)
-        joystick.a().whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        // point wheels at left joystick direction
+        // snap to left coral station angle
+        joystick.y().and(joystick.a().negate()).whileTrue(
+          drivetrain.applyRequest(() -> drivetrain.snapToAngle(joystick, FieldConstants.LEFT_CORAL_STATION_ANGLE))
+        );// snap to left coral station angle
         joystick.b().whileTrue(
-            drivetrain.applyRequest(() -> drivetrain.point(
-                new JoystickVals(joystick.getLeftX(), joystick.getLeftY()))
-            )
+          drivetrain.applyRequest(() -> drivetrain.snapToAngle(joystick, FieldConstants.RIGHT_CORAL_STATION_ANGLE))
         );
-        //bindings for roller subsystem
-        joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
+
+        // reset the field-centric heading (robot forward direction)
+        joystick.a().and(joystick.y()).whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        
         m_roller.setDefaultCommand(m_roller.runRollerOff());
-
-
+        
         drivetrain.registerTelemetry(logger::telemeterize);
         drivetrain.setHeadingController();
-
-        //joystick.y().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 0)));
-        //joystick.b().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 90)));
-        //joystick.a().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 180)));
-        //joystick.x().whileTrue(drivetrain.applyRequest(()->drivetrain.snapToAngle(joystick, 270)));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -120,13 +121,6 @@ public class RobotContainer {
         // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        joystick.rightTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
-        joystick.leftTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
-        joystick.y().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.CENTER));
-
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
         CameraServer.startAutomaticCapture();
