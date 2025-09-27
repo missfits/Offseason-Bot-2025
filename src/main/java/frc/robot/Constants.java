@@ -73,9 +73,10 @@ public class Constants {
         public static final double SPEED_LOWER_LIMIT = 0.0;
         public static final double SPEED_UPPER_LIMIT = 0.0;
 
-
         public static final double OUTTAKE_MOTOR_SPEED = 8.0; 
         public static final double SLOW_OUTTAKE_MOTOR_SPEED = 2.0;
+
+        public static final double RUN_ROLLER_TIME = 1.0; // seconds
     }
   
     public static class VisionConstants {
