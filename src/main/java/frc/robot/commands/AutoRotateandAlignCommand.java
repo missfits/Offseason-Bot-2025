@@ -117,6 +117,9 @@ public class AutoRotateandAlignCommand extends Command {
     SmartDashboard.putString("drivetoreef/target robot translation", m_targetTranslation.toString());
     SmartDashboard.putNumber("drivetoreef/targetX", m_targetTranslation.getX());
     SmartDashboard.putNumber("drivetoreef/targetY", m_targetTranslation.getY());
+    SmartDashboard.putNumber("drivetoreef/targetRotation", m_targetRotation.getRadians());
+    SmartDashboard.putBoolean("drivetoreef/reachedIntermediateTranslation", reachedIntermediateTranslation);
+
   }
 
 
