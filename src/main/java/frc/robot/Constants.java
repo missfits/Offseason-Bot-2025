@@ -140,6 +140,11 @@ public class Constants {
         public static final double kMaxIntermediateA = 1.5; // to be tuned
     }
 
+    public static class FieldConstants {
+        public static final double LEFT_CORAL_STATION_ANGLE = -55;
+        public static final double RIGHT_CORAL_STATION_ANGLE = 55;
+    }
+
 
 }
 

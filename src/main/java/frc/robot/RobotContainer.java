@@ -35,6 +35,7 @@ import frc.robot.subsystems.VisionSubsystem;
 
 import frc.robot.Constants.DrivetrainConstants;
 
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.VisionConstants;
 
 import frc.robot.commands.AutoRotateandAlignCommand;
