@@ -151,6 +151,7 @@ public class AutoRotateandAlignCommand extends Command {
     .withVelocityX(xVelocity)
     .withVelocityY(yVelocity)
     .withTargetDirection(m_targetRotation));
+    m_drivetrain.setIsAutoAligned(isAligned(m_targetTranslation));
   }
 
 
