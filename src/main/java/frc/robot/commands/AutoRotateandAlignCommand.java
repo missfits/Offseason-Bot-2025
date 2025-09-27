@@ -110,7 +110,7 @@ public class AutoRotateandAlignCommand extends Command {
     xController.reset(m_drivetrain.getState().Pose.getX());
     yController.reset(m_drivetrain.getState().Pose.getY());
 
-    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
+    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.ROTATION_kP, DrivetrainConstants.ROTATION_kP, DrivetrainConstants.ROTATION_kP);
     driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
