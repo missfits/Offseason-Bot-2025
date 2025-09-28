@@ -137,7 +137,6 @@ public class Constants {
         public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
         public static final int NUM_LAST_EST_POSES = 3;
       
-        public static final double VISION_ALIGNMENT_DISCARD = Units.inchesToMeters(1); // in meters
         public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
   }
 
@@ -152,6 +151,8 @@ public class Constants {
     
         public static final double kMaxIntermediateV = 2; // to be tuned
         public static final double kMaxIntermediateA = 1.5; // to be tuned
+
+        public static final double ISALIGNED_TOLERANCE = Units.inchesToMeters(1);
     }
 
     public static class FieldConstants {

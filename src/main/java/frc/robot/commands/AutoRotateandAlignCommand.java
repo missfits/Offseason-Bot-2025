@@ -176,6 +176,6 @@ public class AutoRotateandAlignCommand extends Command {
     double yDist = Math.abs(drivetrainPose.getY() - translation.getY());
     SmartDashboard.putNumber("drivetoreef/auto-alignment-xdist", xDist);
     SmartDashboard.putNumber("drivetoreef/auto-alignment-ydist", yDist);
-    return ((xDist < VisionConstants.VISION_ALIGNMENT_DISCARD) && (yDist < VisionConstants.VISION_ALIGNMENT_DISCARD));
+    return ((xDist < AutoAlignConstants.ISALIGNED_TOLERANCE) && (yDist < AutoAlignConstants.ISALIGNED_TOLERANCE));
   }
 }
