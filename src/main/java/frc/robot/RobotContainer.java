@@ -4,6 +4,20 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.util.PathPlannerLogging;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.RollerConstants;
 
@@ -43,13 +58,13 @@ import frc.robot.commands.AutoRotateandAlignCommand.ReefPosition;
 
 
 public class RobotContainer {
-
     public record JoystickVals(double x, double y) {}
     
     private final Telemetry logger = new Telemetry(DrivetrainConstants.MAX_TRANSLATION_SPEED);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    
+    private final SendableChooser<Command> m_autoChooser; // sendable chooser that holds the autos
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public final RollerSubsystem m_roller = new RollerSubsystem();
 
@@ -57,15 +72,27 @@ public class RobotContainer {
 
     private final VisionSubsystem m_vision = new VisionSubsystem();
     private final Field2d m_actualField = new Field2d();
+    private Pose2d m_ppTargetPose;
 
 
     public RobotContainer() {
+      configureBindings();
+      createNamedCommands();
+      m_autoChooser = AutoBuilder.buildAutoChooser();
+      SmartDashboard.putData("Auto Chooser", m_autoChooser);
       // Starts recording to data log
       DataLogManager.start();
       // Record both DS control and joystick data
       DriverStation.startDataLog(DataLogManager.getLog());
       // turn off unplugged joystick errors
       DriverStation.silenceJoystickConnectionWarning(true); 
+
+      PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+        m_ppTargetPose = pose;
+        SmartDashboard.putNumber("ppTargetPose/x", m_ppTargetPose.getX());
+        SmartDashboard.putNumber("ppTargetPose/y", m_ppTargetPose.getY());
+        SmartDashboard.putNumber("ppTargetPose/rotation", m_ppTargetPose.getRotation().getRadians());
+      });
 
       configureBindings();
     }
@@ -102,7 +129,8 @@ public class RobotContainer {
         // snap to left coral station angle
         joystick.y().and(joystick.a().negate()).whileTrue(
           drivetrain.applyRequest(() -> drivetrain.snapToAngle(joystick, FieldConstants.LEFT_CORAL_STATION_ANGLE))
-        );// snap to left coral station angle
+        );
+        // snap to right coral station angle
         joystick.b().whileTrue(
           drivetrain.applyRequest(() -> drivetrain.snapToAngle(joystick, FieldConstants.RIGHT_CORAL_STATION_ANGLE))
         );
@@ -122,20 +150,27 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.rightTrigger().and(joystick.a()).whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
-        joystick.leftTrigger().and(joystick.a()).whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
-        // joystick.y().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.CENTER));
-
-        // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
         drivetrain.registerTelemetry(logger::telemeterize);
         // CameraServer.startAutomaticCapture();
     }
+    
+    private void createNamedCommands() {
+        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED).withTimeout(3));
+    }
 
-
+    // This method loads the auto when it is called, however, it is recommended
+    // to first load your paths/autos when code starts, then return the
+    // pre-loaded auto/path
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return m_autoChooser.getSelected();
+    }
+
+     
+    public Command autoScoreCommand(ReefPosition side) {
+      return new SequentialCommandGroup(
+        new AutoRotateandAlignCommand(drivetrain, side)
+          .until(drivetrain.isAutoAlignedTrigger()), 
+        m_rollerCommandFactory.runRollerWithTimeout());
     }
 
     public void updatePoseEst() {

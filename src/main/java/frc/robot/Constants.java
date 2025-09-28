@@ -48,21 +48,29 @@ public class Constants {
         public static final double STEER_KV = 2.66; 
         public static final double STEER_KA = 0; 
 
-
         public static final double DRIVE_P = 0.05; 
         public static final double DRIVE_I = 0; 
         public static final double DRIVE_D = 0; 
 
         public static final double DRIVE_KS = 0; 
         public static final double DRIVE_KV = 0.125; 
-
-        public static final double ROBOT_ROTATION_P = 5; // 11.507 from rotation sys-id @PF 1/13
-        public static final double ROBOT_ROTATION_I = 0;
-        public static final double ROBOT_ROTATION_D = 0; // 0.10877 from rotation sys-id @PF 1/13
         
         public static final double ROBOT_POSITION_P = 10;
         public static final double ROBOT_POSITION_I = 0;
         public static final double ROBOT_POSITION_D = 0;
+
+        public static final double ROBOT_ROTATION_P = 5; 
+        public static final double ROBOT_ROTATION_I = 0;
+        public static final double ROBOT_ROTATION_D = 0; 
+
+        public static final double ROBOT_PP_TRANSLATION_P = 10;
+        public static final double ROBOT_PP_TRANSLATION_I = 0;
+        public static final double ROBOT_PP_TRANSLATION_D = 0;
+
+        public static final double ROBOT_PP_ROTATION_P = 5; 
+        public static final double ROBOT_PP_ROTATION_I = 0;
+        public static final double ROBOT_PP_ROTATION_D = 0; 
+        
     
         public static final double AUTOALIGN_POSITION_P = 3;
         public static final double AUTOALIGN_POSITION_I = 0;
@@ -92,6 +100,7 @@ public class Constants {
 
         public static final double OUTTAKE_MOTOR_SPEED = -8.0; 
         public static final double SLOW_OUTTAKE_MOTOR_SPEED = -2.0;
+        public static final double RUN_ROLLER_TIME = 1.0; // seconds
     }
   
     public static class VisionConstants {

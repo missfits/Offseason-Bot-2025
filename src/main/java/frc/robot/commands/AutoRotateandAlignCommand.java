@@ -58,6 +58,7 @@ public class AutoRotateandAlignCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_drivetrain.setIsAutoAligned(false);
     
     // add visionutils later (assuming it exists)
     Pose2d aprilTagPose = VisionUtils.getClosestReefAprilTag(m_drivetrain.getState().Pose);
@@ -155,6 +156,7 @@ public class AutoRotateandAlignCommand extends Command {
     .withVelocityX(xVelocity)
     .withVelocityY(yVelocity)
     .withTargetDirection(m_targetRotation));
+    m_drivetrain.setIsAutoAligned(isAligned(m_targetTranslation));
   }
 
 
