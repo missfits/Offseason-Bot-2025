@@ -15,12 +15,6 @@
           "data": {
             "name": "scoreCoral"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreCoral"
-          }
         }
       ]
     }
