@@ -64,15 +64,15 @@ public class Constants {
         public static final double ROBOT_POSITION_I = 0;
         public static final double ROBOT_POSITION_D = 0;
     
-        public static final double AUTOALIGN_POSITION_P = 4;
+        public static final double AUTOALIGN_POSITION_P = 3;
         public static final double AUTOALIGN_POSITION_I = 0;
-        public static final double AUTOALIGN_POSITION_D = 0;
+        public static final double AUTOALIGN_POSITION_D = 0.1;
     
         public static final double TO_TARGET_POSITION_P = 2.5;
         public static final double TO_TARGET_POSITION_I = 0;
         public static final double TO_TARGET_POSITION_D = 0;
 
-        public static final double ROTATION_kP = 5;
+        public static final double ROTATION_kP = 4;
         public static final double ROTATION_kI = 0;
         public static final double ROTATION_kD = 0;
     }
