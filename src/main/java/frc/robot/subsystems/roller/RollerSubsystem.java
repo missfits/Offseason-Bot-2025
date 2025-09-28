@@ -20,20 +20,20 @@ public class RollerSubsystem extends SubsystemBase {
 
     public Command runRollerOff() {
         return new RunCommand(
-            () -> {m_IO.setVoltage(0); SmartDashboard.putString("roller/currentlyRunningCommand", "runRollerOffInstant");},
+            () -> {m_IO.setVelocityVoltage(0); SmartDashboard.putString("roller/currentlyRunningCommand", "runRollerOffInstant");},
             this
         ).withTimeout(0).withName("rollerOff");
     }
 
-    public Command runRoller(double speed) {
+    public Command runRoller(double velocity) {
         return new RunCommand(
-            () -> {m_IO.setVoltage(speed); SmartDashboard.putString("roller/currentlyRunningCommand", "runRollerInstant");},
+            () -> {m_IO.setVelocityVoltage(velocity); SmartDashboard.putString("roller/currentlyRunningCommand", "runRollerInstant");},
             this
         ).withName("rollerOff");
     }
 
-    public Command setVoltageToZeroCommand() {
-        return new RunCommand(() -> m_IO.setVoltage(0), this).ignoringDisable(true);
+    public Command setVelocityVoltageToZeroCommand() {
+        return new RunCommand(() -> m_IO.setVelocityVoltage(0), this).ignoringDisable(true);
     }
 
     @Override

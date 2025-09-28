@@ -10,10 +10,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 import frc.robot.Constants.RollerConstants;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+
 
 public class RollerIOHardware {
     private final TalonFX m_rollerMotor = new TalonFX(RollerConstants.ROLLER_MOTOR_ID);
@@ -29,6 +32,13 @@ public class RollerIOHardware {
         limitConfigs.StatorCurrentLimitEnable = true;
 
         talonFXConfigurator.apply(limitConfigs);
+    }
+
+    public void resetSlot0Gains() {
+        var talonFXConfigs = new TalonFXConfiguration();
+        var slot0Configs = talonFXConfigs.Slot0;
+        slot0Configs.kP = RollerConstants.kP*RollerConstants.METERS_PER_ROTATION;
+        slot0Configs.kI = RollerConstants.kI*RollerConstants.METERS_PER_ROTATION;
     }
 
     // getters
@@ -56,5 +66,10 @@ public class RollerIOHardware {
     public void setVoltage(double value) {
         SmartDashboard.putNumber("roller/voltage", value);
         m_rollerMotor.setControl(new VoltageOut(value));
+    }
+
+    public void setVelocityVoltage(double value) {
+        SmartDashboard.putNumber("roller/Velocity Voltage", value);
+        m_rollerMotor.setControl(new VelocityVoltage(value));
     }
 }

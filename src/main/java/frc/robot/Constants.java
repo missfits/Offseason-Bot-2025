@@ -64,7 +64,7 @@ public class Constants {
     public static class RollerConstants {
         //ALL OF THESE NEED TO BE ADJUSTED
         public static final int ROLLER_MOTOR_ID = 23; // NEED TO CHANGE
-        public static final int MOTOR_STATOR_LIMIT = 20; // needs to be tuned
+        public static final int MOTOR_STATOR_LIMIT = 40; // needs to be tuned
 
         public static final int COUNTS_PER_REV = 42; // MIGHT NEED TO CHANGE
 
@@ -74,8 +74,11 @@ public class Constants {
         public static final double SPEED_UPPER_LIMIT = 0.0;
 
 
-        public static final double OUTTAKE_MOTOR_SPEED = 8.0; 
-        public static final double SLOW_OUTTAKE_MOTOR_SPEED = 2.0;
+        public static final double OUTTAKE_MOTOR_VELOCITY = -3.0; 
+        public static final double SLOW_OUTTAKE_MOTOR_VELOCITY = 2.0;
+        public static final double ROLLER_BACK_VELOCITY = 1.0; 
+        public static final double kP = 0.4;
+        public static final double kI = 4.0;
     }
   
     public static class VisionConstants {
