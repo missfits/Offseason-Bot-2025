@@ -35,18 +35,25 @@ public class Constants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-        
         public static final double ROBOT_SIZE_X = 10; // need to measure ceridwen to find this value, 10 meters (def wrong) is just for now
 
-
-        // copy pasted from robot code 2025 (lines 28 to 43)
-        public static final double ROBOT_ROTATION_P = 5; // 11.507 from rotation sys-id @PF 1/13
-        public static final double ROBOT_ROTATION_I = 0;
-        public static final double ROBOT_ROTATION_D = 0; // 0.10877 from rotation sys-id @PF 1/13
-        
+        // UNTUNED
         public static final double ROBOT_POSITION_P = 10;
         public static final double ROBOT_POSITION_I = 0;
         public static final double ROBOT_POSITION_D = 0;
+
+        public static final double ROBOT_ROTATION_P = 5; 
+        public static final double ROBOT_ROTATION_I = 0;
+        public static final double ROBOT_ROTATION_D = 0; 
+
+        public static final double ROBOT_PP_TRANSLATION_P = 10;
+        public static final double ROBOT_PP_TRANSLATION_I = 0;
+        public static final double ROBOT_PP_TRANSLATION_D = 0;
+
+        public static final double ROBOT_PP_ROTATION_P = 5; 
+        public static final double ROBOT_PP_ROTATION_I = 0;
+        public static final double ROBOT_PP_ROTATION_D = 0; 
+        
     
         public static final double AUTOALIGN_POSITION_P = 4;
         public static final double AUTOALIGN_POSITION_I = 0;
@@ -73,9 +80,9 @@ public class Constants {
         public static final double SPEED_LOWER_LIMIT = 0.0;
         public static final double SPEED_UPPER_LIMIT = 0.0;
 
-        public static final double OUTTAKE_MOTOR_SPEED = 8.0; 
-        public static final double SLOW_OUTTAKE_MOTOR_SPEED = 2.0;
 
+        public static final double OUTTAKE_MOTOR_SPEED = -8.0; 
+        public static final double SLOW_OUTTAKE_MOTOR_SPEED = -2.0;
         public static final double RUN_ROLLER_TIME = 1.0; // seconds
     }
   

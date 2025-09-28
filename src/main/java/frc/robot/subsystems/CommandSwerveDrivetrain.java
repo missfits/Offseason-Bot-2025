@@ -16,6 +16,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.PointWheelsAt;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -35,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 import frc.robot.Controls;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.RobotContainer.JoystickVals;
@@ -71,6 +77,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+    /** Swerve request to apply during robot-centric path following */
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -151,6 +159,50 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        RobotConfig config = null;
+        try {
+        config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+        // Handle exception as needed
+        e.printStackTrace();
+        }
+
+        AutoBuilder.configure(
+            () -> getState().Pose,   // Supplier of current robot pose
+            this::resetPose,         // Consumer for seeding pose against auto (will be called if your auto has a starting pose)
+            () -> getState().Speeds, // Supplier of current robot speeds. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> setControl(
+                m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                // .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                // .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+            ), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+            new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            // Created the numbers below 8/21, replace with DrivetrainConstants later
+                new PIDConstants(
+                    DrivetrainConstants.ROBOT_PP_TRANSLATION_P,
+                    DrivetrainConstants.ROBOT_PP_TRANSLATION_I,
+                    DrivetrainConstants.ROBOT_PP_TRANSLATION_D), // Translation PID constants
+                new PIDConstants(
+                    DrivetrainConstants.ROBOT_PP_ROTATION_P,
+                    DrivetrainConstants.ROBOT_PP_ROTATION_I,
+                    DrivetrainConstants.ROBOT_PP_ROTATION_D
+                ) // Rotation PID constants            
+            ),
+            config,
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+        );
     }
 
     /**
@@ -345,4 +397,5 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
+
 }
