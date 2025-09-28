@@ -171,14 +171,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this::resetPose,         // Consumer for seeding pose against auto (will be called if your auto has a starting pose)
             () -> getState().Speeds, // Supplier of current robot speeds. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                        // .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
-                        // .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
-                ), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                // Created the numbers below 8/21, replace with DrivetrainConstants later
-                    new PIDConstants(10,0,0), // Translation PID constants
-                    new PIDConstants(5,0,0) // Rotation PID constants            
+                m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                // .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                // .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+            ), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+            new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            // Created the numbers below 8/21, replace with DrivetrainConstants later
+                new PIDConstants(
+                    DrivetrainConstants.ROBOT_PP_TRANSLATION_P,
+                    DrivetrainConstants.ROBOT_PP_TRANSLATION_I,
+                    DrivetrainConstants.ROBOT_PP_TRANSLATION_D), // Translation PID constants
+                new PIDConstants(
+                    DrivetrainConstants.ROBOT_PP_ROTATION_P,
+                    DrivetrainConstants.ROBOT_PP_ROTATION_I,
+                    DrivetrainConstants.ROBOT_PP_ROTATION_D
+                ) // Rotation PID constants            
             ),
             config,
             () -> {
