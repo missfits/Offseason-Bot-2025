@@ -122,8 +122,8 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.rightTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
-        joystick.leftTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
+        joystick.rightTrigger().and(joystick.a()).whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
+        joystick.leftTrigger().and(joystick.a()).whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
         // joystick.y().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.CENTER));
 
         // reset the field-centric heading on left bumper press
