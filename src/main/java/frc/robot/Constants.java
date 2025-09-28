@@ -36,7 +36,7 @@ public class Constants {
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
         
-        public static final double ROBOT_SIZE_X = 10; // need to measure ceridwen to find this value, 10 meters (def wrong) is just for now
+        public static final double ROBOT_SIZE_X = 0.8; // approximated
 
 
         // copy pasted from robot code 2025 (lines 28 to 43)
@@ -141,8 +141,8 @@ public class Constants {
   }
 
     public static class AutoAlignConstants {
-        public static final double REEF_OFFSET_RIGHT = 10;
-        public static final double REEF_OFFSET_LEFT = 10;
+        public static final double REEF_OFFSET_RIGHT = 0.13; // approx
+        public static final double REEF_OFFSET_LEFT = 0.13; // approx
 
         public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
 
