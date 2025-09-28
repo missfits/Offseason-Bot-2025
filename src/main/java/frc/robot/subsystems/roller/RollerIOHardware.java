@@ -31,8 +31,10 @@ public class RollerIOHardware {
         limitConfigs.StatorCurrentLimitEnable = true;
 
         talonFXConfigurator.apply(limitConfigs);
+        resetSlot0Gains();
     }
 
+    // configure pid values on motor
     public void resetSlot0Gains() {
         var talonFXConfigs = new TalonFXConfiguration();
         var slot0Configs = talonFXConfigs.Slot0;
