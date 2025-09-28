@@ -80,6 +80,8 @@ public class Constants {
         public static final double SPEED_LOWER_LIMIT = 0.0;
         public static final double SPEED_UPPER_LIMIT = 0.0;
 
+        public static final double RUN_ROLLER_TIME = 1;
+
         public static final double OUTTAKE_MOTOR_VELOCITY = -3.0; 
         public static final double SLOW_OUTTAKE_MOTOR_VELOCITY = 2.0;
         public static final double ROLLER_BACK_VELOCITY = 1.0; 

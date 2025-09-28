@@ -161,7 +161,7 @@ public class RobotContainer {
     }
     
     private void createNamedCommands() {
-        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED).withTimeout(3));
+        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(3));
     }
 
     // This method loads the auto when it is called, however, it is recommended

@@ -19,7 +19,7 @@ public class RollerCommandFactory {
     }
 
     public Command runRollerWithTimeout() {
-        return m_subsystem.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED)
+        return m_subsystem.runRoller(RollerConstants.OUTTAKE_MOTOR_VELOCITY)
             .withTimeout(RollerConstants.RUN_ROLLER_TIME);
     }
 
