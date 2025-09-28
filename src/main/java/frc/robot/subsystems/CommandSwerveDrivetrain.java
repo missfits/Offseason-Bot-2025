@@ -177,8 +177,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                 // Created the numbers below 8/21, replace with DrivetrainConstants later
-                    new PIDConstants(0.3,0.5,0.9), // Translation PID constants
-                    new PIDConstants(0.3,0.5,0.9) // Rotation PID constants            
+                    new PIDConstants(10,0,0), // Translation PID constants
+                    new PIDConstants(5,0,0) // Rotation PID constants            
             ),
             config,
             () -> {

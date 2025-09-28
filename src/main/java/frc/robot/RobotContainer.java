@@ -70,6 +70,7 @@ public class RobotContainer {
 
     private final VisionSubsystem m_vision = new VisionSubsystem();
     private final Field2d m_actualField = new Field2d();
+    private Pose2d m_ppTargetPose;
 
 
     public RobotContainer() {
@@ -83,6 +84,13 @@ public class RobotContainer {
       DriverStation.startDataLog(DataLogManager.getLog());
       // turn off unplugged joystick errors
       DriverStation.silenceJoystickConnectionWarning(true); 
+
+      PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+        m_ppTargetPose = pose;
+        SmartDashboard.putNumber("ppTargetPose/x", m_ppTargetPose.getX());
+        SmartDashboard.putNumber("ppTargetPose/y", m_ppTargetPose.getY());
+        SmartDashboard.putNumber("ppTargetPose/rotation", m_ppTargetPose.getRotation().getRadians());
+      });
 
       configureBindings();
     }
@@ -141,9 +149,6 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.rightTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
-        joystick.leftTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
-        joystick.y().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.CENTER));
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -153,7 +158,7 @@ public class RobotContainer {
     }
     
     private void createNamedCommands() {
-        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED));
+        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED).withTimeout(3));
     }
 
     // This method loads the auto when it is called, however, it is recommended
