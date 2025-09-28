@@ -11,11 +11,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 import frc.robot.Constants.RollerConstants;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
 
 public class RollerIOHardware {
@@ -37,13 +36,13 @@ public class RollerIOHardware {
     public void resetSlot0Gains() {
         var talonFXConfigs = new TalonFXConfiguration();
         var slot0Configs = talonFXConfigs.Slot0;
-        slot0Configs.kP = RollerConstants.kP*RollerConstants.METERS_PER_ROTATION;
-        slot0Configs.kI = RollerConstants.kI*RollerConstants.METERS_PER_ROTATION;
+        slot0Configs.kP = RollerConstants.kP;
+        slot0Configs.kI = RollerConstants.kI;
     }
 
     // getters
     public double getVelocity() {
-        return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond)*RollerConstants.METERS_PER_ROTATION;
+        return m_velocitySignal.refresh().getValue().in(RevolutionsPerSecond);
     }
 
     public double getCurrent() {
