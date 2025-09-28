@@ -49,12 +49,12 @@ public class Constants {
         public static final double STEER_KA = 0; 
 
 
-        public static final double DRIVE_P = 0.1; 
+        public static final double DRIVE_P = 0.05; 
         public static final double DRIVE_I = 0; 
         public static final double DRIVE_D = 0; 
 
         public static final double DRIVE_KS = 0; 
-        public static final double DRIVE_KV = 0.124; 
+        public static final double DRIVE_KV = 0.125; 
 
         public static final double ROBOT_ROTATION_P = 5; // 11.507 from rotation sys-id @PF 1/13
         public static final double ROBOT_ROTATION_I = 0;
