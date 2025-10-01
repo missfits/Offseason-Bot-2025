@@ -132,7 +132,7 @@ public class RobotContainer {
         );
         //bindings for roller subsystem
         joystick.y().whileTrue(m_rollerCommandFactory.runRoller());
-        m_roller.setDefaultCommand(m_roller.runRollerOff());
+        m_roller.setDefaultCommand(m_rollerCommandFactory.runRollerBack());
 
         drivetrain.registerTelemetry(logger::telemeterize);
         drivetrain.setHeadingController();
@@ -149,10 +149,9 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-
-        joystick.a().whileTrue(autoScoreCommand(ReefPosition.LEFT));
-        joystick.b().whileTrue(autoScoreCommand(ReefPosition.CENTER));
-        joystick.x().whileTrue(autoScoreCommand(ReefPosition.RIGHT));
+        joystick.rightTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
+        joystick.leftTrigger().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
+        //joystick.y().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.CENTER));
 
         // reset the field-centric heading on left bumper press
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -162,7 +161,7 @@ public class RobotContainer {
     }
     
     private void createNamedCommands() {
-        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED).withTimeout(3));
+        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(3));
     }
 
     // This method loads the auto when it is called, however, it is recommended
