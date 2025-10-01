@@ -70,7 +70,7 @@ public class RollerIOHardware {
     }
 
     public void setVelocityVoltage(double value) {
-        SmartDashboard.putNumber("roller/Velocity Voltage", value);
+        SmartDashboard.putNumber("roller/setpoint velocity", value);
         m_rollerMotor.setControl(new VelocityVoltage(value));
     }
 }
