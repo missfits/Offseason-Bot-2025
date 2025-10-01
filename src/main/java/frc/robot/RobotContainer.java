@@ -111,6 +111,7 @@ public class RobotContainer {
         
         //bindings for roller subsystem
         joystick.leftTrigger().and(joystick.a().negate()).whileTrue(m_rollerCommandFactory.runRoller());
+        m_roller.setDefaultCommand(m_rollerCommandFactory.runRollerBack());
         
         // drive in slowmode
         joystick.rightTrigger().and(joystick.a().negate()).whileTrue(
@@ -134,7 +135,6 @@ public class RobotContainer {
         joystick.b().whileTrue(
           drivetrain.applyRequest(() -> drivetrain.snapToAngle(joystick, FieldConstants.RIGHT_CORAL_STATION_ANGLE))
         );
-
         // reset the field-centric heading (robot forward direction)
         joystick.a().and(joystick.y()).whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
@@ -155,7 +155,7 @@ public class RobotContainer {
     }
     
     private void createNamedCommands() {
-        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_SPEED).withTimeout(3));
+        NamedCommands.registerCommand("scoreCoral", m_roller.runRoller(RollerConstants.OUTTAKE_MOTOR_VELOCITY).withTimeout(3));
     }
 
     // This method loads the auto when it is called, however, it is recommended
