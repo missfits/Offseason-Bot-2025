@@ -23,6 +23,14 @@ public class RollerCommandFactory {
             .withTimeout(RollerConstants.RUN_ROLLER_TIME);
     }
 
+    public Command runRollerSlow() {
+        return m_subsystem.runRoller(RollerConstants.SLOW_OUTTAKE_MOTOR_VELOCITY);
+    }
+
+    public Command runRollerFast() {
+        return m_subsystem.runRoller(RollerConstants.FAST_OUTTAKE_MOTOR_VELOCITY);
+    }
+
     public Command rollerOff() {
         return m_subsystem.runRollerOff();
     }

@@ -109,10 +109,6 @@ public class RobotContainer {
             )
         );
         
-        //bindings for roller subsystem
-        joystick.leftTrigger().and(joystick.a().negate()).whileTrue(m_rollerCommandFactory.runRoller());
-        m_roller.setDefaultCommand(m_rollerCommandFactory.runRollerBack());
-        
         // drive in slowmode
         joystick.rightTrigger().and(joystick.a().negate()).whileTrue(
             drivetrain.applyRequest(()-> drivetrain.defaultDrive(
@@ -121,9 +117,6 @@ public class RobotContainer {
                 true)
             )
         );
-        
-        joystick.leftBumper().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
-        joystick.rightBumper().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
         
         // point wheels in x configuration
         joystick.x().whileTrue(drivetrain.pointWheelsInX());
@@ -135,11 +128,19 @@ public class RobotContainer {
         joystick.b().whileTrue(
           drivetrain.applyRequest(() -> drivetrain.snapToAngle(joystick, FieldConstants.RIGHT_CORAL_STATION_ANGLE))
         );
+
+        //bindings for roller subsystem
+        joystick.leftTrigger().and(joystick.a().negate()).whileTrue(m_rollerCommandFactory.runRoller());
+        joystick.a().and(joystick.leftTrigger()).whileTrue(m_rollerCommandFactory.runRollerFast());
+        m_roller.setDefaultCommand(m_rollerCommandFactory.runRollerBack());
+        
         // reset the field-centric heading (robot forward direction)
         joystick.a().and(joystick.y()).whileTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
-        m_roller.setDefaultCommand(m_roller.runRollerOff());
-        
+        // autoalign binding
+        joystick.leftBumper().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.LEFT)); 
+        joystick.rightBumper().whileTrue(new AutoRotateandAlignCommand(drivetrain, ReefPosition.RIGHT)); 
+
         drivetrain.registerTelemetry(logger::telemeterize);
         drivetrain.setHeadingController();
 
@@ -150,7 +151,6 @@ public class RobotContainer {
         // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
         // CameraServer.startAutomaticCapture();
     }
     
