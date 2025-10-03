@@ -111,11 +111,15 @@ public class AutoRotateandAlignCommand extends Command {
     xController.reset(m_drivetrain.getState().Pose.getX());
     yController.reset(m_drivetrain.getState().Pose.getY());
 
-    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.AUTOALIGN_POSITION_P, DrivetrainConstants.AUTOALIGN_POSITION_I, DrivetrainConstants.AUTOALIGN_POSITION_D);
+    driveRequest.HeadingController = new PhoenixPIDController(DrivetrainConstants.ROTATION_kP, DrivetrainConstants.ROTATION_kP, DrivetrainConstants.ROTATION_kP);
     driveRequest.HeadingController.enableContinuousInput(0, Math.PI * 2);
       
     SmartDashboard.putString("drivetoreef/target robot rotation", m_targetRotation.toString());
     SmartDashboard.putString("drivetoreef/target robot translation", m_targetTranslation.toString());
+    SmartDashboard.putNumber("drivetoreef/targetX", m_targetTranslation.getX());
+    SmartDashboard.putNumber("drivetoreef/targetY", m_targetTranslation.getY());
+    SmartDashboard.putNumber("drivetoreef/targetRotation", m_targetRotation.getRadians());
+    SmartDashboard.putBoolean("drivetoreef/reachedIntermediateTranslation", reachedIntermediateTranslation);
 
   }
 
@@ -172,8 +176,8 @@ public class AutoRotateandAlignCommand extends Command {
     // change to absolute value?
     double xDist = Math.abs(drivetrainPose.getX() - translation.getX());
     double yDist = Math.abs(drivetrainPose.getY() - translation.getY());
-    SmartDashboard.putNumber("drivetrain/auto-alignment-xdist", xDist);
-    SmartDashboard.putNumber("drivetrain/auto-alignment-ydist", yDist);
-    return ((xDist < VisionConstants.VISION_ALIGNMENT_DISCARD) && (yDist < VisionConstants.VISION_ALIGNMENT_DISCARD));
+    SmartDashboard.putNumber("drivetoreef/auto-alignment-xdist", xDist);
+    SmartDashboard.putNumber("drivetoreef/auto-alignment-ydist", yDist);
+    return ((xDist < AutoAlignConstants.ISALIGNED_TOLERANCE) && (yDist < AutoAlignConstants.ISALIGNED_TOLERANCE));
   }
 }
