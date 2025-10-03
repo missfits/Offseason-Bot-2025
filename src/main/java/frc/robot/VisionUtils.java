@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Constants.VisionConstants;
 
 public class VisionUtils {
-    private static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    private static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     private static List<Pose2d> reefAprilTagPoses = new ArrayList<>();
 
     static {

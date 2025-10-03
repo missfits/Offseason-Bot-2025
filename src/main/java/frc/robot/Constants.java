@@ -35,9 +35,26 @@ public class Constants {
         public static final double MAX_TRANSLATION_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-        public static final double ROBOT_SIZE_X = 10; // need to measure ceridwen to find this value, 10 meters (def wrong) is just for now
+        
+        public static final double ROBOT_SIZE_X = 0.8255;
 
-        // UNTUNED
+
+        // copy pasted from robot code 2025 (lines 28 to 43)
+        public static final double STEER_P = 100; 
+        public static final double STEER_I = 0; 
+        public static final double STEER_D = 0.5; 
+
+        public static final double STEER_KS = 0.1; 
+        public static final double STEER_KV = 2.66; 
+        public static final double STEER_KA = 0; 
+
+        public static final double DRIVE_P = 0.05; 
+        public static final double DRIVE_I = 0; 
+        public static final double DRIVE_D = 0; 
+
+        public static final double DRIVE_KS = 0; 
+        public static final double DRIVE_KV = 0.125; 
+        
         public static final double ROBOT_POSITION_P = 10;
         public static final double ROBOT_POSITION_I = 0;
         public static final double ROBOT_POSITION_D = 0;
@@ -55,15 +72,15 @@ public class Constants {
         public static final double ROBOT_PP_ROTATION_D = 0; 
         
     
-        public static final double AUTOALIGN_POSITION_P = 4;
+        public static final double AUTOALIGN_POSITION_P = 3;
         public static final double AUTOALIGN_POSITION_I = 0;
-        public static final double AUTOALIGN_POSITION_D = 0;
+        public static final double AUTOALIGN_POSITION_D = 0.1;
     
         public static final double TO_TARGET_POSITION_P = 2.5;
         public static final double TO_TARGET_POSITION_I = 0;
         public static final double TO_TARGET_POSITION_D = 0;
 
-        public static final double ROTATION_kP = 5;
+        public static final double ROTATION_kP = 4;
         public static final double ROTATION_kI = 0;
         public static final double ROTATION_kD = 0;
     }
@@ -90,18 +107,16 @@ public class Constants {
     }
   
     public static class VisionConstants {
-        public static final String CAMERA1_NAME = "beam_camera";  
-        public static final String CAMERA2_NAME = "swerve_camera";  
+        public static final String CAMERA1_NAME = "camera1";  
+        public static final String CAMERA2_NAME = "camera2";  
 
-
-        // all of these values are from dynamene and need to be fine tuned
-        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-2); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(-1); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(17); // in meters from the floor?
+        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-(25.5/2-7.0/8)); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(25.5/2-2.5); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(6+3.0/8); // in meters from the floor?
         
-        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(13-4.75); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(13-3.125); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(7.5); // in meters from the floor?
+        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(25.5/2-5.0/8); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(25.5/2-2.75); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(6+5.0/8); // in meters from the floor?
         
 
         // default vision standard deviation
@@ -122,7 +137,7 @@ public class Constants {
 
         public static final double ROBOT_TO_CAM2_ROLL = 0;
         public static final double ROBOT_TO_CAM2_YAW = 0;
-        public static final double ROBOT_TO_CAM2_PITCH = -Math.PI/9;
+        public static final double ROBOT_TO_CAM2_PITCH = 0;
 
         public static final Transform3d ROBOT_TO_CAM1_3D = 
           new Transform3d(new Translation3d(ROBOT_TO_CAM1_X, ROBOT_TO_CAM1_Y, ROBOT_TO_CAM1_Z), new Rotation3d(ROBOT_TO_CAM1_ROLL,ROBOT_TO_CAM1_YAW,ROBOT_TO_CAM1_PITCH)); // in meters from center of robot to 2x4 camera mount
@@ -134,13 +149,12 @@ public class Constants {
         public static final double MAX_AVG_SPEED_BETWEEN_LAST_EST_POSES = MAX_AVG_DIST_BETWEEN_LAST_EST_POSES * 50.;
         public static final int NUM_LAST_EST_POSES = 3;
       
-        public static final double VISION_ALIGNMENT_DISCARD = Units.inchesToMeters(1); // in meters
         public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
   }
 
     public static class AutoAlignConstants {
-        public static final double REEF_OFFSET_RIGHT = 10;
-        public static final double REEF_OFFSET_LEFT = 10;
+        public static final double REEF_OFFSET_RIGHT = 0.13; // approx
+        public static final double REEF_OFFSET_LEFT = 0.13; // approx
 
         public static final double INTERMEDIATE_POS_DIST = Units.inchesToMeters(5); // go slower in the last 5 inches
 
@@ -149,6 +163,13 @@ public class Constants {
     
         public static final double kMaxIntermediateV = 2; // to be tuned
         public static final double kMaxIntermediateA = 1.5; // to be tuned
+
+        public static final double ISALIGNED_TOLERANCE = Units.inchesToMeters(1);
+    }
+
+    public static class FieldConstants {
+        public static final double LEFT_CORAL_STATION_ANGLE = -55;
+        public static final double RIGHT_CORAL_STATION_ANGLE = 55;
     }
 
 
