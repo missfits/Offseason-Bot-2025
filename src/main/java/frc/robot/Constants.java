@@ -36,7 +36,7 @@ public class Constants {
         public static final double MAX_ROTATION_SPEED = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
         
-        public static final double ROBOT_SIZE_X = 0.8; // approximated
+        public static final double ROBOT_SIZE_X = 0.8255;
 
 
         // copy pasted from robot code 2025 (lines 28 to 43)
