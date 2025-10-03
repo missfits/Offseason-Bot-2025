@@ -81,8 +81,9 @@ public class Constants {
 
         public static final double RUN_ROLLER_TIME = 1;
 
-        public static final double OUTTAKE_MOTOR_VELOCITY = -3.0; 
-        public static final double SLOW_OUTTAKE_MOTOR_VELOCITY = 2.0;
+        public static final double FAST_OUTTAKE_MOTOR_VELOCITY = -18; 
+        public static final double OUTTAKE_MOTOR_VELOCITY = -15; 
+        public static final double SLOW_OUTTAKE_MOTOR_VELOCITY = -5.0;
         public static final double ROLLER_BACK_VELOCITY = 1.0; 
         public static final double kP = 0.4;
         public static final double kI = 4.0;
