@@ -112,11 +112,11 @@ public class Constants {
 
         public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-(25.5/2-6)); // in meters from center of robot 
         public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(25.5/2); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(33/4); // in meters from the floor?
+        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(33.0/4); // in meters from the floor?
         
-        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(25.5/2-23/4); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(25.5/2-23.0/4); // in meters from center of robot 
         public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(25.5/2); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(35/4); // in meters from the floor?
+        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(35.0/4); // in meters from the floor?
         
 
         // default vision standard deviation
