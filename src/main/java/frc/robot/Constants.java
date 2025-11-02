@@ -107,16 +107,16 @@ public class Constants {
     }
   
     public static class VisionConstants {
-        public static final String CAMERA1_NAME = "camera1";  
-        public static final String CAMERA2_NAME = "camera2";  
+        public static final String CAMERA1_NAME = "camera1"; // green camera
+        public static final String CAMERA2_NAME = "camera2"; // blue camera
 
-        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-(25.5/2-7.0/8)); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(25.5/2-2.5); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(6+3.0/8); // in meters from the floor?
+        public static final double ROBOT_TO_CAM1_X = Units.inchesToMeters(-(25.5/2-6)); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Y = Units.inchesToMeters(25.5/2); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM1_Z = Units.inchesToMeters(33.0/4); // in meters from the floor?
         
-        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(25.5/2-5.0/8); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(25.5/2-2.75); // in meters from center of robot 
-        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(6+5.0/8); // in meters from the floor?
+        public static final double ROBOT_TO_CAM2_X = Units.inchesToMeters(25.5/2-23.0/4); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Y = Units.inchesToMeters(25.5/2); // in meters from center of robot 
+        public static final double ROBOT_TO_CAM2_Z = Units.inchesToMeters(35.0/4); // in meters from the floor?
         
 
         // default vision standard deviation
